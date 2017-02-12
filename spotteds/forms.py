@@ -8,8 +8,8 @@ class PendingSpottedForm(forms.ModelForm):
     """PendingSpottedForm
     Form for the submission of new spotteds
     """
-    anonymous = forms.BooleanField(required=False, label='Anônimo?')
-    target_name = forms.CharField(required=False, label='Nome do(a) Crush', widget=forms.TextInput(attrs={'class': 'typeahead', 'placeholder': 'Crush Santos da Silva'}))
+    anonymous = forms.BooleanField(required=False, label='Anônimo: Ninguém nunca saberá quem enviou este spotted. Seu contato não é fornecido à ninguém.')
+    target_name = forms.CharField(required=False, label='Nome do(a) Crush. (Apenas a pessoa marcada poderá receber seu contato)', widget=forms.TextInput(attrs={'class': 'typeahead', 'placeholder': 'Crush Santos da Silva'}))
     captcha = ReCaptchaField()
 
     class Meta:
@@ -18,7 +18,7 @@ class PendingSpottedForm(forms.ModelForm):
         labels = {
             'message': 'Mensagem',
             'attachment': 'Anexo (GIFs, links, etc)',
-            'public': 'Público?'
+            'public': 'Público: qualquer pessoa que pedir o contato do spotted terá acesso ao seu perfil do facebook.'
         }
         widgets = {
             'attachment': forms.TextInput(attrs={'placeholder': 'http://crush.com/vamo_se_pegar.gif'})
