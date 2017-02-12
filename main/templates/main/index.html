@@ -107,7 +107,7 @@
     <div class="ui three column centered grid stackable container">
         <div class="ui column aligned center">
             <h3>
-                A maior comunidade de crushes da Internet
+                Todos os crushes da UNICAMP
             </h3>
             <p>
                 À sua disposição na distância de um Click!
@@ -119,7 +119,7 @@
                     {{ users | length }}
                 </div>
                 <div class="label">
-                    <i class="icon heart"></i>Crushes Ativos
+                    <i class="icon heart"></i>Pessoas registradas na base de dados
                 </div>
             </div>
             <div class="ui inverted huge statistic">
@@ -133,10 +133,10 @@
         </div>
         <div class="ui column aligned center">
             <h3>
-                Copiosas quantidades de amor
+                Universitários cheios de amor pra dar e receber
             </h3>
             <p>
-                Compartilhadas diariamente!
+                Enviando spotteds diariamente!
             </p>
         </div>
     </div>
@@ -153,10 +153,10 @@
             <div class="eight wide column">
                 <h3 class="ui header">Instruções</h3>
                 {% if user.is_authenticated %}
-                <p>Vai marcar um crush, mas não quer que elx saiba quem é você? Marque a opção "anônimo" para <strong>não</strong> associar seu spotted à sua conta!<br><small>Spotteds anônimos não estarão disponíveis em seu histórico.</small></p>
+                <p>Vai marcar um crush, mas não quer que ninguém quem é você? Marque a opção "anônimo" para <strong>não</strong> associar seu spotted à sua conta!<br><small>Spotteds anônimos não estarão disponíveis em seu histórico.</small></p>
 
                 {% else %}
-                <p>Entre em sua conta para obter benefícios como:<ul><li>Histórico de Spotteds</li><li>Ser marcado pelxs crushes</li><li>Marcar crushes e ser encontradx por elxs</li></ul></p>
+                <p>Entre em sua conta para obter benefícios como:<ul><li>Histórico de Spotteds</li><li>Ser marcado pelos crushes</li><li>Marcar crushes e ser encontrado por eles</li></ul></p>
                 <p>
                     <a class="button is-info" href="{% url 'custom_auth:facebook_login' %}">
                         <span class="icon">
@@ -166,7 +166,7 @@
                     <small>Nós nunca divulgamos suas informações sem seu consentimento!</small>
                 </p>
                 {% endif %}
-                <p>Marque seu crush! Digite o nome delx e, se elx já tiver usado nosso Spotted, receberá uma notificação do seu <i>amor</i> imediatamente! {% if user.is_authenticated %}<small> Crushes marcados(e apenas eles) saberão que foi você que enviou, caso o Spotted não seja anônimo.</small>{% endif %}</p>
+                <p>Digite o nome do crush para marcá-lo. Se ele já estiver registrado em nossa base de crushes, receberá uma notificação do seu <i>amor</i> imediatamente! {% if user.is_authenticated %}<small> Crushes marcados(e apenas eles) saberão que foi você que enviou, caso o Spotted não seja anônimo.</small>{% endif %}</p>
                 <p>Acha que apenas palavras não são suficientes para demonstrar seu afeto? Envie GIFs e outros links em anexo! <br><small>Links serão analisados pela moderação</small></p>
             </div>
             <div class="six wide right floated column">
