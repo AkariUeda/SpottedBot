@@ -21,7 +21,7 @@
             </div>
         </div>
         <div class="column">
-<<<<<<< HEAD
+
             <h2>Enviando spotteds: passo a passo</h2>
             <p>
                 <ol>
@@ -51,19 +51,10 @@
                     </li>
                 </ol>
             </p>
-=======
-            <h2>Spotteds mais inteligentes do que nunca</h2>
-            <p>Spotteds como antes, só que melhores!</p>
-            <p>Agora eles usam inteligência artificial para decidir que mensagens são merecedoras de serem postadas na página.</p>
-            <p>Você envia, nós checkamos o conteúdo de sua mensagem e decidimos se aprovamos.</p>
-            <p>Você também pode marcar seus crushes em seus spotteds!</p>
-            <p>Para marcar alguém, basta começar a digitar seu nome na caixa "marcar crush". Se seu crush já usou nosso site, ele vai aparecer lá!</p>
-            <p>Acabou de mandar um spotted? Nós te avisaremos quando ele for postado! Você receberá uma notificação no facebook!</p>
-            <p>Seu crush também receberá na hora! Assim ele nunca perderá um spotted sequer e seu amor não será invisível</p>
->>>>>>> gustavobranch
+
         </div>
         <div class="column">
-            <h2>PQP: Perguntas, questões e mais perguntas</h2>
+            <h2>Dúvidas frequentes</h2>
             <p>
                 <ul>
                     <li>
@@ -72,7 +63,7 @@
                     </li>
                     <li>
                         <b>Como faço pra enviar imagens do meu celular/computador no spotted?</b><br>
-                        Através de um serviço de host de fotos na internet. Como sugestão, sugerimos o <a href="http://imgur.com/">imgur</a>. Para usá-lo, entre no site (não é necessário fazer login), clique no ícone de nuvem no canto e envie sua imagem. Para conseguir o link, clique com o botão direito do mouse em cima da imagem e clique em "Copiar endereço da imagem" ou, pelo celular, "Abrir imagem em uma nova guia" e copie o endereço dessa nova guia. Lembrando que esse link deve terminar com uma extensão de imagem, como ".jpg", se o link não possui uma extensão, você está pegando o link errado.
+                        Através de um serviço de host de fotos na internet. Como sugestão, sugerimos o <b>imgur</b>. Para usá-lo, entre no site (não é necessário fazer login), clique no ícone de nuvem no canto e envie sua imagem. Para conseguir o link, clique com o botão direito do mouse em cima da imagem e clique em "Copiar endereço da imagem" ou, pelo celular, "Abrir imagem em uma nova guia" e copie o endereço dessa nova guia. Lembrando que esse link deve terminar com uma extensão de imagem, como ".jpg", se o link não possui uma extensão, você está pegando o link errado.
                     </li>
                     <li>
                         <b>Quem pode ser marcado nos spotteds?</b><br>
@@ -94,12 +85,7 @@
 
                 </ul>
             </p>
-            <p>Nós te damos todas as opções!</p>
-            <p>Aqui você pode decidir se quer que seu spotted seja visto por alguém ou não!</p>
-            <p>Lembramos que quando você manda um spotted assinado(não anônimo), apenas você e seu crush, se marcado, poderão saber quem enviou!</p>
-            <p>Você pode também enviar um spotted público. Spotteds públicos são perfeitos para quando você quer deixar contato para que qualquer pessoa possa te encontrar, não apenas seu crush!</p>
-            <p>Quer enviar um spotted assinado mas tem medo de que nós vejamos quem é você? Não se preocupe! Nós, moderadores, nunca vemos quem enviou ou foi marcado em nenhum spotted! É completamente anônimo!</p>
-        </div>
+            </div>
     </div>
 </div>
 
@@ -107,7 +93,7 @@
     <div class="ui three column centered grid stackable container">
         <div class="ui column aligned center">
             <h3>
-                A maior comunidade de crushes da Internet
+                Todos os crushes da UNICAMP
             </h3>
             <p>
                 À sua disposição na distância de um Click!
@@ -119,7 +105,7 @@
                     {{ users | length }}
                 </div>
                 <div class="label">
-                    <i class="icon heart"></i>Crushes Ativos
+                    <i class="icon heart"></i>Pessoas registradas na base de dados
                 </div>
             </div>
             <div class="ui inverted huge statistic">
@@ -133,10 +119,10 @@
         </div>
         <div class="ui column aligned center">
             <h3>
-                Copiosas quantidades de amor
+                Universitários cheios de amor pra dar e receber
             </h3>
             <p>
-                Compartilhadas diariamente!
+                Enviando spotteds diariamente!
             </p>
         </div>
     </div>
@@ -153,10 +139,10 @@
             <div class="eight wide column">
                 <h3 class="ui header">Instruções</h3>
                 {% if user.is_authenticated %}
-                <p>Vai marcar um crush, mas não quer que elx saiba quem é você? Marque a opção "anônimo" para <strong>não</strong> associar seu spotted à sua conta!<br><small>Spotteds anônimos não estarão disponíveis em seu histórico.</small></p>
+                <p><strong>Não selecionar a opção de Anônimo ou Público fará com que seu contato fique disponível apenas para o crush marcado</strong><br></p>
 
                 {% else %}
-                <p>Entre em sua conta para obter benefícios como:<ul><li>Histórico de Spotteds</li><li>Ser marcado pelxs crushes</li><li>Marcar crushes e ser encontradx por elxs</li></ul></p>
+                <p>Entre em sua conta para obter benefícios como:<ul><li>Histórico de Spotteds</li><li>Ser marcado pelos crushes</li><li>Marcar crushes e ser encontrado por eles</li></ul></p>
                 <p>
                     <a class="button is-info" href="{% url 'custom_auth:facebook_login' %}">
                         <span class="icon">
@@ -166,8 +152,8 @@
                     <small>Nós nunca divulgamos suas informações sem seu consentimento!</small>
                 </p>
                 {% endif %}
-                <p>Marque seu crush! Digite o nome delx e, se elx já tiver usado nosso Spotted, receberá uma notificação do seu <i>amor</i> imediatamente! {% if user.is_authenticated %}<small> Crushes marcados(e apenas eles) saberão que foi você que enviou, caso o Spotted não seja anônimo.</small>{% endif %}</p>
-                <p>Acha que apenas palavras não são suficientes para demonstrar seu afeto? Envie GIFs e outros links em anexo! <br><small>Links serão analisados pela moderação</small></p>
+                <p>Digite o nome do crush para marcá-lo. Se ele já estiver registrado em nossa base de crushes, receberá uma notificação do seu <i>amor</i> imediatamente! {% if user.is_authenticated %}<br>{% endif %}</p>
+            
             </div>
             <div class="six wide right floated column">
                 <h2>
