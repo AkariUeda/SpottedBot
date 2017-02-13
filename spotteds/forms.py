@@ -8,7 +8,7 @@ class PendingSpottedForm(forms.ModelForm):
     """PendingSpottedForm
     Form for the submission of new spotteds
     """
-    anonymous = forms.BooleanField(required=False, label='Anônimo: Marque essa opção se quer que ninguém saiba o autor do spotted. Seu contato não é fornecido à ninguém.')
+    anonymous = forms.BooleanField(required=False, label='Anônimo: Marque essa opção se quer que ninguém saiba o autor do spotted. Nem seu crush, nem Deus, nem ninguém saberá quem é você.')
     target_name = forms.CharField(required=False, label='Nome do(a) Crush. (Apenas a pessoa marcada poderá receber seu contato)', widget=forms.TextInput(attrs={'class': 'typeahead', 'placeholder': 'Crush Santos da Silva'}))
     captcha = ReCaptchaField()
 
