@@ -18,10 +18,15 @@ def is_moderator(self):
         return False
 
 
+# Monkeypatch the property to user
 User.add_to_class('is_moderator', is_moderator)
 
 
 class Moderator(models.Model):
+    """Moderator
+
+    Fields and methods
+    """
 
     user = models.OneToOneField(
         User,
@@ -31,6 +36,7 @@ class Moderator(models.Model):
 
     def log_action(self):
         for work in self.workhours.all():
+            # For every workhour, register action
             work.action_took()
 
     def __str__(self):
@@ -60,6 +66,11 @@ DURATION = [(i, str(i) + ":00") for i in range(1, 25)]
 
 
 class WorkHour(models.Model):
+    """Work Hour
+
+    Represents each individual moderator's work shifts
+    Used for internal staff control
+    """
 
     moderator = models.ForeignKey(
         Moderator,
@@ -79,7 +90,6 @@ class WorkHour(models.Model):
     @property
     def last_work(self):
         now2 = now.replace(hour=self.hour, minute=0)
-        print(now2)
         return now2 - datetime.timedelta((now2.weekday() - self.day) % 7)
 
     @property
