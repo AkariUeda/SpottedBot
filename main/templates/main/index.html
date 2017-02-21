@@ -1,0 +1,282 @@
+{% extends "main/base.html" %}
+{% load staticfiles %}
+
+{% block extend_scripts %}
+<script type="text/javascript" src="{% static 'main/js/typeahead.js/typeahead.bundle.js' %}"></script>
+{% endblock %}
+
+{% block extend_style %}
+<link rel="stylesheet" type="text/css" href="{% static 'main/css/typeahead.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="ui divider"></div>
+<div class="ui vertical stripe quote segment">
+    <div class="ui middle equal width aligned stackable grid container">
+        <div class="center aligned row">
+            <div class="center aligned column">
+                <h1>
+                    Spotted 2.0: Because true love never dies
+                </h1>
+            </div>
+        </div>
+        <div class="column">
+
+            <h2>Enviando spotteds: passo a passo</h2>
+            <p>
+                <ol>
+                    <li>
+                        Escolha: fazer login com a conta do facebook ou não?
+                    </li>
+                    <li>
+                        Marcando a opção "Anônimo", seu contato não será fornecido a ninguém.
+                    </li>
+                    <li>
+                        Marcando a opção "Público", qualquer pessoa que pedir o contato terá acesso a seu perfil do facebook.
+                    </li>
+                    <li>
+                        Se o seu crush já fez login no site pelo menos uma vez na vida, o nome dele estará disponível para ser marcado. Assim, ele receberá uma notificação no facebook quando receber seu spotted.
+                    </li>
+                    <li>
+                        A não ser que você tenha marcado a opção "Público", apenas o crush marcado receberá seu perfil quando pedir contato.
+                    </li>
+                    <li>
+                        Se quiser, copie a URL da imagem ou gif que queira anexar ao seu spotted.
+                    </li>
+                    <li>
+                        Escreva sua mensagem de amor ❤
+                    </li>
+                    <li>
+                        Envie seu spotted aos <s>deuses</s> moderadores e aguarde que em breve será postado na <a href="http://www.facebook.com/spottedunicamp2/">página do facebook</a>.
+                    </li>
+                </ol>
+            </p>
+
+        </div>
+        <div class="column">
+            <h2>Dúvidas frequentes</h2>
+            <p>
+                <ul>
+                    <li>
+                        <b>Quem tem acesso ao meu contato?</b><br>
+                        Se você marcou alguém para receber seu spotted, apenas essa pessoa, logada em sua conta do facebook, terá acesso ao seu contato quando pedir.
+                    </li>
+                    <li>
+                        <b>Como faço pra enviar imagens do meu celular/computador no spotted?</b><br>
+                        Através de um serviço de host de fotos na internet. Como sugestão, sugerimos o <b>imgur</b>. Para usá-lo, entre no site (não é necessário fazer login), clique no ícone de nuvem no canto e envie sua imagem. Para conseguir o link, clique com o botão direito do mouse em cima da imagem e clique em "Copiar endereço da imagem" ou, pelo celular, "Abrir imagem em uma nova guia" e copie o endereço dessa nova guia. Lembrando que esse link deve terminar com uma extensão de imagem, como ".jpg", se o link não possui uma extensão, você está pegando o link errado.
+                    </li>
+                    <li>
+                        <b>Quem pode ser marcado nos spotteds?</b><br>
+                        Qualquer pessoa que já fez login neste site pelo menos uma vez na vida.
+                    </li>
+                    <li>
+                        <b>Como faço pra deixar meu whatsapp como forma de contato?</b><br>
+                        Nosso sistema deixa automaticamente o seu perfil de facebook. Não é possível deixar outras formas de contato.
+                    </li>
+                    <li>
+                        <b>Então não é possível deixar contato como anônimo?</b><br>
+                        Não.
+                    </li>
+                    <li>
+                        <b>Se eu enviar um spotted logado com a minha conta do facebook, quem saberá que fui eu que mandei o spotted?</b><br>
+                        Levamos privacidade à sério. Nem mesmo os moderadores da página sabem quem são os autores das mensagens. Seu perfil será fornecido automaticamente pelo sistema <b>apenas</b> para seu crush, caso você terá marcado ele no momento do envio. Ou, em caso de você ter enviado o spotted como <b>público</b>, qualquer pessoa que pedir o contato da postagem terá acesso ao seu perfil.
+                    </li>
+
+
+                </ul>
+            </p>
+            </div>
+    </div>
+</div>
+
+<div id="stats" class="ui vertical inverted blue stripe segment">
+    <div class="ui three column centered grid stackable container">
+        <div class="ui column aligned center">
+            <h3>
+                Todos os crushes da UNICAMP
+            </h3>
+            <p>
+                À sua disposição na distância de um Click!
+            </p>
+        </div>
+        <div class="ui column aligned center">
+            <div class="ui inverted huge statistic">
+                <div class="value">
+                    {{ users | length }}
+                </div>
+                <div class="label">
+                    <i class="icon heart"></i>Pessoas registradas na base de dados
+                </div>
+            </div>
+            <div class="ui inverted huge statistic">
+                <div class="value">
+                    {{ spotteds | length }}<br>
+                </div>
+                <div class="label">
+                    <i class="icon send"></i> Spotteds Enviados
+                </div>
+            </div>
+        </div>
+        <div class="ui column aligned center">
+            <h3>
+                Universitários cheios de amor pra dar e receber
+            </h3>
+            <p>
+                Enviando spotteds diariamente!
+            </p>
+        </div>
+    </div>
+</div>
+
+<div id='submit' class="ui vertical stripe segment">
+    <div class="ui middle aligned stackable grid container">
+        <div class="row">
+            <div class="sixteen wide column center aligned">
+                <h1>Envie um Spotted agora!</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="eight wide column">
+                <h3 class="ui header">Instruções</h3>
+                {% if user.is_authenticated %}
+                <p><strong>Não selecionar a opção de Anônimo ou Público fará com que seu contato fique disponível apenas para o crush marcado</strong><br></p>
+
+                {% else %}
+                <p>Entre em sua conta para obter benefícios como:<ul><li>Histórico de Spotteds</li><li>Ser marcado pelos crushes</li><li>Marcar crushes e ser encontrado por eles</li></ul></p>
+                <p>
+                    <a class="button is-info" href="{% url 'custom_auth:facebook_login' %}">
+                        <span class="icon">
+                            <img style="max-height: 35px;" src="{% static 'main/img/login.png' %}">
+                        </span>
+                    </a><br>
+                    <small>Nós nunca divulgamos suas informações sem seu consentimento!</small>
+                </p>
+                {% endif %}
+                <p>Digite o nome do crush para marcá-lo. Se ele já estiver registrado em nossa base de crushes, receberá uma notificação do seu <i>amor</i> imediatamente! {% if user.is_authenticated %}<br>{% endif %}</p>
+            
+            </div>
+            <div class="six wide right floated column">
+                <h2>
+                    {% include 'spotteds/forms/submit.html' %}
+                </h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id='contact' class="ui vertical inverted blue stripe segment">
+    <div class="ui text container center aligned">
+        <h3 class="ui inverted header">Contato</h3><p style="font-size: smaller; color: black">{{ contactemail }}</p>
+    </div>
+    <br>
+    <div class="ui text container">
+        <form action="{% url 'contact' %}" method="post">
+            {% csrf_token %}
+            <div class="ui equal width form">
+                <div class="fields">
+                    <div id="name" class="field {% if contactform.name.errors.as_text %}error{% endif %}">
+                        <label {% if not contactform.name.errors.as_text %}style="color: white;"{% endif %} >{{ contactform.name.label}}</label>
+                        <span style="color: red" class="small">{{ contactform.name.errors.as_text }}</span>
+                        {{ contactform.name }}
+                    </div>
+                    <div id="email" class="field {% if contactform.email.errors.as_text %}error{% endif %}">
+                        <label {% if not contactform.email.errors.as_text %}style="color: white;"{% endif %} >{{ contactform.email.label}}</label>
+                        <span style="color: red" class="small">{{ contactform.email.errors.as_text }}</span>
+                        {{ contactform.email }}
+                    </div>
+                    <div id="subject" class="field {% if contactform.subject.errors.as_text %}error{% endif %}">
+                        <label {% if not contactform.subject.errors.as_text %}style="color: white;"{% endif %} >{{ contactform.subject.label}}</label>
+                        <span style="color: red" class="small">{{ contactform.subject.errors.as_text }}</span>
+                        {{ contactform.subject }}
+                    </div>
+                </div>
+            </div>
+            <div class="ui form">
+                <div id="text" class="field {% if contactform.text.errors.as_text %}error{% endif %}">
+                    <label {% if not contactform.text.errors.as_text %}style="color: white;"{% endif %} >{{ contactform.text.label}}</label>
+                    <span style="color: red" class="small">{{ contactform.text.errors.as_text }}</span>
+                    {{ contactform.text }}
+                </div>
+            </div>
+
+            <div style="text-align: center;">
+                <br>
+                <button class="ui big button black" type="submit">Enviar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id='report' class="ui vertical inverted black stripe segment">
+    <div class="ui text container center aligned">
+        <h3 class="ui inverted header">Reportar</h3>
+        <small>Não gostou de algum spotted?<br> Acha que ele deveria ser removido? Nos fale o número dele e nós faremos algo a respeito.</small>
+    </div>
+    <br>
+    <div class="ui text center aligned container">
+        <form action="{% url 'report' %}" method="post">
+            {% csrf_token %}
+            <div class="column four wide">
+                <div class="fields">
+                    <div id="number" class="field {% if reportform.number.errors.as_text %}error{% endif %}">
+                        <span style="color: red" class="small">{{ reportform.number.errors.as_text }}</span>
+                        <div class="ui labeled input">
+                            <div class="ui label">
+                                Spotted #
+                            </div>
+                            {{ reportform.number }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ui form">
+                <div id="text" class="field {% if reportform.text.errors.as_text %}error{% endif %}">
+                    <label style="text-align: left; {% if not reportform.text.errors.as_text %}color: white;{% endif %}" >{{ reportform.text.label}}</label>
+                    <span style="color: red" class="small">{{ reportform.text.errors.as_text }}</span>
+                    {{ reportform.text }}
+                </div>
+            </div>
+
+            <div style="text-align: center;">
+                <br>
+                <button class="ui big button blue" type="submit">Enviar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="ui inverted vertical footer segment">
+    <div class="ui container">
+        <div class="ui stackable center aligned inverted divided equal height stackable grid">
+            <div class="row">
+                <div class="eight wide column">
+                    <div class="right aligned">
+                        <h4 class="ui inverted header">Sobre</h4>
+                        <div class="ui inverted link horizontal list">
+                            <a href="/#submit" class="right item">Envie Spotteds</a>
+                            <a href="{% url 'search' %}" class="item">Pegar contato</a>
+                            <a href="/#contact" class="item">Contato</a>
+                            <a class="item" href="https://github.com/Maronato/SpottedBot">Código fonte <i class="icon github"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="eight wide column">
+                    <h4 class="ui left aligned inverted header">Projeto SpottedBot</h4>
+                    <p style="text-align: left">Simplificando e automatizando a distribuição de mensagens amorosas pela Interweb.</p>
+                </div>
+            </div>
+            <div class="row">
+            <div style="color: grey;">
+                    Made with  <i class="icon heart red"></i> by <a href="https://www.facebook.com/gustavo.maronato">Maronato</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    // Clear localstorage so crush list is updated
+    localStorage.clear();
+</script>
+{% endblock %}

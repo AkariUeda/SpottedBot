@@ -1,0 +1,9 @@
+dj-database-url
+Django
+gunicorn
+psycopg2
+whitenoise
+facebook-sdk
+django-recaptcha
+
+requests
