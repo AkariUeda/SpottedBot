@@ -1,10 +1,7 @@
-#!-*- coding: utf-8 -*-
-
-
 import facebook
 from django.conf import settings
 from django.shortcuts import reverse
-from urllib import urlencode
+from urllib.parse import urlencode
 from django.contrib.auth import login
 from django.contrib import messages
 
