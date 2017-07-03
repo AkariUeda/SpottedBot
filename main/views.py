@@ -9,6 +9,8 @@ from spotteds.models import Spotted, PendingSpotted
 from django.contrib.auth.models import User
 from api.api_interface import api_process_deleted, api_my_delete_options, api_forme_delete_options
 from django.contrib.auth.decorators import login_required
+from custom_auth.facebook_methods import get_graph
+from project.manual_error_report import exception_email
 
 
 def index(request, contactform=None, spottedform=None, reportform=None):
@@ -49,7 +51,11 @@ def about(request):
 
 
 def prefetch_facebook_usernames(request):
-    names = [obj.name for obj in FacebookUser.objects.all()]
+    query_str = ','.join([obj.social_id for obj in FacebookUser.objects.all()])
+    results = get_graph().get_object("?fields=picture, name&ids=" + query_str)
+    names = []
+    for res in results:
+        names.append({"name": results[res]['name'], "picture": results[res]["picture"]["data"]["url"], "id": results[res]["id"]})
     return JsonResponse(names, safe=False)
 
 
@@ -127,9 +133,12 @@ def delete_spotted(request):
     if not response:
         raise Http404
         return
-
-    # Fully delete spotted(from page and from DB)
-    instance.remove_spotted(True)
+    try:
+        # Fully delete spotted(from page and from DB)
+        instance.remove_spotted(True)
+    except Exception as e:
+        exception_email(request, e)
+        raise e
     return HttpResponse('Success')
 
 
