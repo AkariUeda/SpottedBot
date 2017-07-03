@@ -8,9 +8,9 @@ class PendingSpottedForm(forms.ModelForm):
     """PendingSpottedForm
     Form for the submission of new spotteds
     """
-    anonymous = forms.BooleanField(required=False, label='Anônimo: Marque essa opção se quer que ninguém saiba o autor do spotted. Nem seu crush, nem Deus, nem ninguém saberá quem é você.')
-    target_name = forms.CharField(required=False, label='Nome do(a) Crush. (Apenas a pessoa marcada poderá receber seu contato)', widget=forms.TextInput(attrs={'class': 'typeahead', 'placeholder': 'Crush Santos da Silva'}))
-    captcha = ReCaptchaField()
+    target_name = forms.CharField(required=False, label='Nome do(a) Crush', widget=forms.TextInput(attrs={'class': 'typeahead', 'placeholder': 'Crush Santos da Silva'}))
+    target_id = forms.CharField(required=False, widget=forms.HiddenInput())
+    captcha = ReCaptchaField(attrs={"callback": "captchaSpottedCallback", })
 
     class Meta:
         model = PendingSpotted
@@ -18,20 +18,22 @@ class PendingSpottedForm(forms.ModelForm):
         labels = {
             'message': 'Mensagem',
             'attachment': 'Anexo (GIFs, links, etc)',
-            'public': 'Público: qualquer pessoa que pedir o contato do spotted terá acesso ao seu perfil do facebook.'
+            'public': 'Público?'
         }
         widgets = {
             'attachment': forms.TextInput(attrs={'placeholder': 'http://crush.com/vamo_se_pegar.gif'})
         }
 
-    def clean_target_name(self):
+    def clean_target_id(self):
         # Get target obj if applicable
 
+        target_id = self.cleaned_data.get('target_id')
         target_name = self.cleaned_data.get('target_name')
-        if target_name:
+        if target_id:
             try:
-                target = FacebookUser.objects.get(name=target_name)
-                return target.user
+                target = FacebookUser.objects.get(social_id=target_id)
+                if target.name == target_name:
+                    return target.user
             except:
                 raise forms.ValidationError(target_name + " ainda não está cadastrado(a). Verifique sua digitação ou deixe em branco.")
         return None
@@ -40,10 +42,9 @@ class PendingSpottedForm(forms.ModelForm):
         # Apply author and target if applicable
 
         instance = super(PendingSpottedForm, self).save(commit=False)
-        anonymous = self.cleaned_data['anonymous']
-        target = self.cleaned_data['target_name']
+        target = self.cleaned_data['target_id']
 
-        if anonymous is not True and author.is_authenticated():
+        if author.is_authenticated():
             instance.author = author
 
         if target is not None:

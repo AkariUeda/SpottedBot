@@ -2,90 +2,164 @@
 {% load staticfiles %}
 
 {% block extend_scripts %}
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.10/handlebars.js"></script>
 <script type="text/javascript" src="{% static 'main/js/typeahead.js/typeahead.bundle.js' %}"></script>
 {% endblock %}
 
 {% block extend_style %}
 <link rel="stylesheet" type="text/css" href="{% static 'main/css/typeahead.css' %}">
+<style type="text/css">
+    .tt-menu-keep-open { display: block !important; }
+</style>
 {% endblock %}
 
 {% block content %}
-<div class="ui divider"></div>
-<div class="ui vertical stripe quote segment">
-    <div class="ui middle equal width aligned stackable grid container">
-        <div class="center aligned row">
-            <div class="center aligned column">
-                <h1>
-                    Spotted 2.0: Because true love never dies
-                </h1>
+<div id="submit" class="ui vertical stripe">
+    <div class="ui middle aligned container">
+        <div class="ui grid stackable">
+            <div class="row centered">
+                <div class="six wide column">
+                    <form id="spotted_form" action="{% url 'spotteds:submit' %}" method="post" class="ui form">
+                        {% csrf_token %}
+                        <div style="display: none" class="ui top attached tabular menu">
+                            <a style="pointer-events: none" class="item active" data-tab="0" data-id="0">Login</a>
+                            <a style="pointer-events: none" class="item" data-tab="1" data-id="1">Mensagem</a>
+                            <a style="pointer-events: none" class="item" data-tab="2" data-id="2">Marcar alvo</a>
+                            <a style="pointer-events: none" class="item" data-tab="3" data-id="3">Enviar</a>
+                        </div>
+                        <div style="text-align: center;" class="ui transition fade in top attached tab active" data-tab="0">
+                            {% if not user.is_authenticated %}
+                            <h1>Submeter Spotteds nunca foi tão fácil</h1>
+                            <h2>Clique no botão abaixo para se inscrever e enviar spotteds agora!</h2>
+                            <a href="{% url 'custom_auth:facebook_login' %}">
+                                <img style="max-height: 50px;" src="{% static 'main/img/login.png' %}">
+                            </a>
+                            <br>
+                            <div class="ui divider"></div>
+                            <a data-position="top center" href="#" id="refuse_button" style="color: grey" onclick="refuse_signin();"><small>Não quero me inscrever</small></a>
+                            {% endif %}
+                        </div>
+                        <div class="ui transition fade in top attached tab" data-tab="1">
+                            <h1>Compartilhe o seu amor</h1>
+                            <p>Envie algo especial para aquele alguém especial</p>
+                            <p>Você também pode adicionar imagens e links ao seu spotted como anexos</p>
+                            <div class="field {% if spottedform.message.errors.as_text %}error{% endif %}">
+                                <label>{{ spottedform.message.label}}</label>
+                                <span style="color: red" class="small">{{ spottedform.message.errors.as_text }}</span>
+                                {{ spottedform.message }}
+                                <br><br>
+                                <label>{{ spottedform.attachment.label}}</label>
+                                {{ spottedform.attachment }}
+                            </div>
+                            <br>
+                            <div class="ui divider"></div>
+                            <div style="text-align: right;">
+                                {% if not user.is_authenticated %}
+                                <button type="button" class="ui button red" onclick="previous_tab(1)"><i class="icon angle left"></i>Anterior</button>
+                                {% endif %}
+                                <button id="message_button" type="button" class="ui button green" onclick="message_next()">Próximo<i class="icon angle right"></i></button>
+                            </div>
+                        </div>
+                        <div class="ui transition fade in top attached tab" data-tab="2">
+
+                            <h1>Não dê um tiro no escuro</h1>
+                            <p>Deixe seu crush saber o quão especial elx é</p>
+                            <small>PS: Sua identidade e a identidade do seu crush não são compartilhadas com ninguém além de vocês mesmos. Nem com a moderação.<br><b>Sua privacidade é a nossa prioridade</b></small>
+                            <br><br>
+                            <span style="color: blue" id="target_found_tip"></span>
+                            <br><br>
+                            <div id="target_name" class="field {% if spottedform.target_name.errors.as_text %}error{% endif %}">
+                                <label>{{ spottedform.target_name.label}}</label>
+                                <span style="color: red" class="small">{{ spottedform.target_name.errors.as_text }}</span>
+                                {{ spottedform.target_name }}
+                                {{ spottedform.target_id }}
+                            </div>
+                            <br><br>
+                            <div class="ui divider"></div>
+                            <div style="text-align: right;">
+                                <button type="button" class="ui button red" onclick="previous_tab(2)"><i class="icon angle left"></i>Anterior</button>
+                                <button type="button" class="ui button green" onclick="next_tab(2)">Próximo<i class="icon angle right"></i></button>
+                            </div>
+                        </div>
+                        <div class="ui transition fade in top attached tab" data-tab="3">
+                            <h1>Quase lá!</h1>
+                            <p>Precisamos ter certeza de que você está mesmo aí</p>
+                            <br>
+                            {{ spottedform.captcha }}
+                            <br><br>
+                            <div class="ui divider"></div>
+                            <div style="text-align: right;">
+                                <button type="button" class="ui button red" onclick="previous_tab(3)"><i class="icon angle left"></i>Anterior</button>
+                                <button id="spotted_submit_button" disabled class="ui button blue"><i class="send icon"></i> Enviar Spotted</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
-        <div class="column">
+    </div>
+</div>
 
-            <h2>Enviando spotteds: passo a passo</h2>
-            <p>
-                <ol>
-                    <li>
-                        Escolha: fazer login com a conta do facebook ou não?
-                    </li>
-                    <li>
-                        Marcando a opção "Anônimo", seu contato não será fornecido a ninguém.
-                    </li>
-                    <li>
-                        Marcando a opção "Público", qualquer pessoa que pedir o contato terá acesso a seu perfil do facebook.
-                    </li>
-                    <li>
-                        Se o seu crush já fez login no site pelo menos uma vez na vida, o nome dele estará disponível para ser marcado. Assim, ele receberá uma notificação no facebook quando receber seu spotted.
-                    </li>
-                    <li>
-                        A não ser que você tenha marcado a opção "Público", apenas o crush marcado receberá seu perfil quando pedir contato.
-                    </li>
-                    <li>
-                        Se quiser, copie a URL da imagem ou gif que queira anexar ao seu spotted.
-                    </li>
-                    <li>
-                        Escreva sua mensagem de amor ❤
-                    </li>
-                    <li>
-                        Envie seu spotted aos <s>deuses</s> moderadores e aguarde que em breve será postado na <a href="http://www.facebook.com/spottedunicamp2/">página do facebook</a>.
-                    </li>
-                </ol>
-            </p>
-
+<div class="ui vertical stripe">
+    <div class="ui middle center aligned stackable grid container">
+        <div class="column eight wide">
+            <h2 class="ui icon header">
+                <i style="color: grey" class="privacy icon">
+                </i>
+                <div class="content">
+                    Privacidade
+                    <div class="sub header">
+                    </div>
+                </div>
+            </h2>
         </div>
-        <div class="column">
-            <h2>Dúvidas frequentes</h2>
-            <p>
-                <ul>
-                    <li>
-                        <b>Quem tem acesso ao meu contato?</b><br>
-                        Se você marcou alguém para receber seu spotted, apenas essa pessoa, logada em sua conta do facebook, terá acesso ao seu contato quando pedir.
-                    </li>
-                    <li>
-                        <b>Como faço pra enviar imagens do meu celular/computador no spotted?</b><br>
-                        Através de um serviço de host de fotos na internet. Como sugestão, sugerimos o <b>imgur</b>. Para usá-lo, entre no site (não é necessário fazer login), clique no ícone de nuvem no canto e envie sua imagem. Para conseguir o link, clique com o botão direito do mouse em cima da imagem e clique em "Copiar endereço da imagem" ou, pelo celular, "Abrir imagem em uma nova guia" e copie o endereço dessa nova guia. Lembrando que esse link deve terminar com uma extensão de imagem, como ".jpg", se o link não possui uma extensão, você está pegando o link errado.
-                    </li>
-                    <li>
-                        <b>Quem pode ser marcado nos spotteds?</b><br>
-                        Qualquer pessoa que já fez login neste site pelo menos uma vez na vida.
-                    </li>
-                    <li>
-                        <b>Como faço pra deixar meu whatsapp como forma de contato?</b><br>
-                        Nosso sistema deixa automaticamente o seu perfil de facebook. Não é possível deixar outras formas de contato.
-                    </li>
-                    <li>
-                        <b>Então não é possível deixar contato como anônimo?</b><br>
-                        Não.
-                    </li>
-                    <li>
-                        <b>Se eu enviar um spotted logado com a minha conta do facebook, quem saberá que fui eu que mandei o spotted?</b><br>
-                        Levamos privacidade à sério. Nem mesmo os moderadores da página sabem quem são os autores das mensagens. Seu perfil será fornecido automaticamente pelo sistema <b>apenas</b> para seu crush, caso você terá marcado ele no momento do envio. Ou, em caso de você ter enviado o spotted como <b>público</b>, qualquer pessoa que pedir o contato da postagem terá acesso ao seu perfil.
-                    </li>
+        <div class="column eight wide">
+            <h2>Você está no controle</h2>
+            <p>Sua privacidade é a nossa prioridade e, por isso, cuidamos parar que nenhuma informação esteja fora do seu controle.</p>
+            <p>Não existem <i>voyeurs</i> no Spotted, nem mesmo os moderadores. Apenas você e o seu crush sabem quem vocês são.</p>
+        </div>
+    </div>
+</div>
 
+<div class="ui vertical stripe">
+    <div class="ui middle center aligned stackable grid container">
+        <div class="column eight wide">
+            <h2>Instantâneos e inteligentes</h2>
+            <p>Nunca mais espere que a moderação aprove sua mensagem.</p>
+            <p>O SpottedBot aprende com cada Spotted que você envia e fica mais inteligente, aprovando e reprovando Spotteds instantâneamente de forma imparcial.</p>
+        </div>
+        <div class="column eight wide">
+            <h2 class="ui icon header">
+                <i style="color: blue" class="lightning icon">
+                </i>
+                <div class="content">
+                    Rapidez
+                    <div class="sub header">
+                    </div>
+                </div>
+            </h2>
+        </div>
+    </div>
+</div>
 
-                </ul>
-            </p>
+<div class="ui vertical stripe">
+    <div class="ui middle center aligned stackable grid container">
+        <div class="row">
+            <div class="column sixteen wide">
+                <h2 class="ui icon header">
+                    <i style="color: red" class="heart icon">
+                    </i>
+                </h2>
             </div>
+        </div>
+        <div class="row">
+            <div class="column eight wide">
+                <h2>A maior comunidade da interweb</h2>
+                <p>O Spotted é muito mais que uma página de Facebook.</p>
+                <p>Com sua ajuda, o Spotted compartilha amor atingindo centenas de pessoas diariamente com spotteds apaixonados.</p>
+                {% if not user.is_authenticated %}<p>Se você ainda não faz parte dessa comunidade, <a href="{% url 'custom_auth:facebook_login' %}">entre agora</a>.{% endif %}
+            </div>
+        </div>
     </div>
 </div>
 
@@ -93,7 +167,7 @@
     <div class="ui three column centered grid stackable container">
         <div class="ui column aligned center">
             <h3>
-                Todos os crushes da UNICAMP
+                A maior comunidade de crushes da Internet
             </h3>
             <p>
                 À sua disposição na distância de um Click!
@@ -105,7 +179,7 @@
                     {{ users | length }}
                 </div>
                 <div class="label">
-                    <i class="icon heart"></i>Pessoas registradas na base de dados
+                    <i class="icon heart"></i>Crushes Ativos
                 </div>
             </div>
             <div class="ui inverted huge statistic">
@@ -119,54 +193,20 @@
         </div>
         <div class="ui column aligned center">
             <h3>
-                Universitários cheios de amor pra dar e receber
+                Copiosas quantidades de amor
             </h3>
             <p>
-                Enviando spotteds diariamente!
+                Compartilhadas diariamente!
             </p>
-        </div>
-    </div>
-</div>
-
-<div id='submit' class="ui vertical stripe segment">
-    <div class="ui middle aligned stackable grid container">
-        <div class="row">
-            <div class="sixteen wide column center aligned">
-                <h1>Envie um Spotted agora!</h1>
-            </div>
-        </div>
-        <div class="row">
-            <div class="eight wide column">
-                <h3 class="ui header">Instruções</h3>
-                {% if user.is_authenticated %}
-                <p><strong>Não selecionar a opção de Anônimo ou Público fará com que seu contato fique disponível apenas para o crush marcado</strong><br></p>
-
-                {% else %}
-                <p>Entre em sua conta para obter benefícios como:<ul><li>Histórico de Spotteds</li><li>Ser marcado pelos crushes</li><li>Marcar crushes e ser encontrado por eles</li></ul></p>
-                <p>
-                    <a class="button is-info" href="{% url 'custom_auth:facebook_login' %}">
-                        <span class="icon">
-                            <img style="max-height: 35px;" src="{% static 'main/img/login.png' %}">
-                        </span>
-                    </a><br>
-                    <small>Nós nunca divulgamos suas informações sem seu consentimento!</small>
-                </p>
-                {% endif %}
-                <p>Digite o nome do crush para marcá-lo. Se ele já estiver registrado em nossa base de crushes, receberá uma notificação do seu <i>amor</i> imediatamente! {% if user.is_authenticated %}<br>{% endif %}</p>
-            
-            </div>
-            <div class="six wide right floated column">
-                <h2>
-                    {% include 'spotteds/forms/submit.html' %}
-                </h2>
-            </div>
         </div>
     </div>
 </div>
 
 <div id='contact' class="ui vertical inverted blue stripe segment">
     <div class="ui text container center aligned">
-        <h3 class="ui inverted header">Contato</h3><p style="font-size: smaller; color: black">{{ contactemail }}</p>
+        <h3 class="ui inverted header">Contato</h3>
+        <p style="font-size: smaller">Tem alguma sugestão, crítica ou declaração? Nos contate agora mesmo!</p>
+        <p style="font-size: smaller; color: black">{{ contactemail }}</p>
     </div>
     <br>
     <div class="ui text container">
@@ -266,7 +306,7 @@
                 </div>
             </div>
             <div class="row">
-            <div style="color: grey;">
+                <div style="color: grey;">
                     Made with  <i class="icon heart red"></i> by <a href="https://www.facebook.com/gustavo.maronato">Maronato</a>
                 </div>
             </div>
@@ -278,5 +318,108 @@
 
     // Clear localstorage so crush list is updated
     localStorage.clear();
+</script>
+
+<script type="text/javascript">
+    var targets = new Bloodhound({
+    // Initialize bloodhound
+    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+    queryTokenizer: Bloodhound.tokenizers.whitespace,
+
+    prefetch: {
+        url: "{% url 'prefetch_facebook_users' %}",
+        filter: function (users) {
+            return $.map(users, function (user) {
+                return {
+                    name: user.name,
+                    picture: user.picture,
+                    id: user.id
+                };
+            });
+        }
+    }
+});
+</script>
+<script type="text/javascript" src="{% static 'main/js/spotted_submission/tabs.js' %}"></script>
+<script type="text/javascript" src="{% static 'main/js/spotted_submission/search.js' %}"></script>
+<script type="text/javascript" src="{% static 'main/js/spotted_submission/message_processing.js' %}"></script>
+
+<script type="text/javascript">
+
+    // Setup
+
+    {% if user.is_authenticated %}
+    next_tab(0);
+    {% endif %}
+
+    function refuse_signin() {
+        $("#refuse_button").popup({
+            position : 'top center',
+            target: "#refuse_button",
+            on: "click",
+            html  : '<h4 style="text-align: center">Tem certeza?</h4>\
+            <p style="text-align: center"><a href="{% url "custom_auth:facebook_login" %}">Ok, me inscreva</a></p>\
+            <p style="text-align: center"><a href="#" style="color: grey;" onclick="refuse_confirm();"><small>Não quero</small></a></p>'
+        });
+        $("#refuse_button").popup("show");
+    }
+    function refuse_confirm() {
+        $("#refuse_button").popup("hide");
+        next_tab(0);
+    }
+
+    function message_next() {
+
+        var attachment = $("#id_attachment").val();
+        var message = $("#id_message").val();
+
+        if (message.length == 0) {
+            $("#message_button").popup({
+                position : 'right center',
+                target: "#message_button",
+                on: "click",
+                title    : 'Mensagem em branco!',
+                content  : 'Spotteds silenciosos não são muito populares.'
+            });
+            $("#message_button").popup("show");
+        }
+        else if (attachment.length == 0){
+            allow_message_next(true);
+        }
+        else
+            urlExists(attachment, allow_message_next);
+    };
+
+    function urlExists(url, callback){
+        callback(/^(?:(?:(?:https?|ftp):)?\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})).?)(?::\d{2,5})?(?:[/?#]\S*)?$/i.test( url ));
+    };
+
+    function allow_message_next(argument) {
+        if (argument) {
+            var name = process_message();
+            if (name) {
+                manual_trigger(name);
+                $("#target_found_tip").text("Acho que encontrei alguém no seu spotted. Será que alguma dessas pessoas é o seu crush?");
+            }
+            enable_tab(2);
+            next_tab(1);
+            $("#message_button").popup("hide");
+        }
+        else {
+            $("#message_button").popup({
+                position : 'right center',
+                target: "#message_button",
+                on: "click",
+                title    : 'URL do anexo inválida!',
+                content  : 'Será que você esqueceu de alguma coisa?'
+            });
+            $("#message_button").popup("show");
+        }
+    }
+
+    function captchaSpottedCallback() {
+        console.log("captcha");
+        $('#spotted_submit_button').prop("disabled", false);
+    }
 </script>
 {% endblock %}
