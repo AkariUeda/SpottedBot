@@ -6,13 +6,12 @@
 	<!-- Load project's staticfiles -->
 	{% load staticfiles %}
 	{% load ads %}
-
-	<!---------- facebook meta tags---------->
+	<!-- facebook meta tags -->
 	<meta property="fb:app_id"          content="1204077889712577" />
 	<meta property="og:type"            content="website" />
 	<meta property="og:url"             content="https://spottedsunicamp.herokuapp.com/" />
 	<meta property="og:title"           content="Spotted Unicamp" />
-	<meta property="og:image"           content="https://spottedsunicamp.herokuapp.com/static/main/img/logo.2f24221441b7.png" />
+	<meta property="og:image"           content="https://spottedsunicamp.herokuapp.com{% static 'main/img/favicon.png' %}" />
 	<meta property="og:description"    content="Because true love dies. Faça seu primeiro login para se registrar em nosso sistema e ser marcado em spotteds." />
 
 	<meta charset="utf-8">
@@ -62,7 +61,7 @@
 	<script type="text/javascript" src="{% static 'main/js/GA.js' %}"></script>
 
 	<!-- Google Adsense -->
-	{% include 'main/init_ads.html' %}
+	{% include 'main/ads/init_ads.html' %}
 
 </head>
 
@@ -168,12 +167,7 @@
 
 		<!-- Specific contents -->
 
-
-		{% ad_active as ad_result %}
-		{% if ad_result %}
-		<div class="ui is_desktop test centered leaderboard ad" data-text="Large Leaderboard"></div>
-		<div class="centered ui mobile leaderboard test ad" data-text="Mobile Leaderboard"></div>
-		{% endif %}
+		{% include 'main/ads/banner_ad.html' %}
 
 		{% block content %}{% endblock %}
 
