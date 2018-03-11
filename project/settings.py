@@ -56,7 +56,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -211,7 +211,9 @@ DEV_AD = "ca-pub-2287814566368449"
 SPOTTED_AD = os.environ.get('SPOTTED_AD', False)
 ADS_ACTIVE = eval(os.environ.get('ADS_ACTIVE', 'False'))
 AD_TEST = eval(os.environ.get('AD_TEST', 'False'))
-AD_SLOTS = eval(os.environ.get('AD_SLOTS', '[]')) or (["slot 1", "slot 2", "slot 3"] if AD_TEST else [])
+AD_SLOTS = eval(os.environ.get('AD_SLOTS', '[]'))
+if not len(AD_SLOTS) and AD_TEST:
+    AD_SLOTS = ["slot 1", "slot 2", "slot 3"]
 ADS_APPROVED = True if AD_SLOTS else False
 
 
