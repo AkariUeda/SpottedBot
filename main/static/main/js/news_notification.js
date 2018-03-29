@@ -3,7 +3,7 @@
 var nag_id = 'db_migration_nag';
 var nag_value = true;
 var notification_is_active = true;
-var notification_text = '<b>Importante!</b> O Spotted estará em manutenção hoje de 14:20 até 17:00!';
+var notification_text = '<b>Importante!</b> O Spotted estará em manutenção 29/03 de 14:20 até 30/03 12:00!';
 // <a style="color: silver" href="#" onclick="$(' + "'#notification_modal'" + ').modal(' + "'show'" +')">Mais Informações</a>
 var notification_modal_header = "Olá :)";
 var notification_modal_content = '\
