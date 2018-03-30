@@ -1,9 +1,15 @@
 // Automatically shows on init if cookie isnt set
 
 var nag_id = 'db_migration_nag';
+<<<<<<< HEAD
 var nag_value = false;
 var notification_is_active = false;
 var notification_text = '<b>Importante!</b> O Spotted estará em manutenção hoje de 14:20 até 17:00!';
+=======
+var nag_value = true;
+var notification_is_active = true;
+var notification_text = '<b>Importante!</b> O Spotted estará em manutenção 29/03 de 14:20 até 30/03 12:00!';
+>>>>>>> b47ec9998c6e495c8300f4f4fc678b285363b5c9
 // <a style="color: silver" href="#" onclick="$(' + "'#notification_modal'" + ').modal(' + "'show'" +')">Mais Informações</a>
 var notification_modal_header = "Olá :)";
 var notification_modal_content = '\
