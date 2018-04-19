@@ -123,9 +123,13 @@ class PendingSpotted(models.Model):
     attachment_safe = models.BooleanField(default=False)
 
     @property
+    def has_attachment(self):
+        return self.attachment is not None and self.attachment != ''
+
+    @property
     def is_attachment_safe(self):
         # If there is an attachment and it is not safe
-        if not self.attachment_safe and self.attachment:
+        if not self.attachment_safe and self.has_attachment:
             # Check if really not safe
             res = is_safe(self.attachment)
             # Update spotted
@@ -141,9 +145,7 @@ class PendingSpotted(models.Model):
 
         # Only post with attachment if safe
         attachment = self.attachment
-        if not self.is_attachment_safe:
-            attachment = ''
-        if attachment is None:
+        if not self.is_attachment_safe or not self.has_attachment:
             attachment = ''
 
         # Create new Spotted object from self
@@ -156,7 +158,11 @@ class PendingSpotted(models.Model):
 
         # post to facebook
         try:
-            resp = page_graph().put_wall_post(f_message, {'link': self.attachment})
+            # Only if not in debug mode
+            if not settings.TEST_MODE:
+                resp = page_graph().put_wall_post(f_message, {'link': attachment})
+            else:
+                resp = {'id': 1}
 
         # Try to catch invalid url exception
         except GraphAPIError as e:
@@ -177,9 +183,9 @@ class PendingSpotted(models.Model):
         self.delete()
 
         # send notifications
-        if s.author:
+        if s.author and not settings.TEST_MODE:
             author_notification(s)
-        if s.target:
+        if s.target and not settings.TEST_MODE:
             target_notification(s)
         return s
 
