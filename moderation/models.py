@@ -8,8 +8,7 @@ now = timezone.localtime(timezone.now())
 
 @property
 def is_moderator(self):
-    """Is Moderator.
-
+    """Is Moderator
     User property to check if the user is a moderator
     """
     try:
@@ -24,7 +23,7 @@ User.add_to_class('is_moderator', is_moderator)
 
 
 class Moderator(models.Model):
-    """Moderator.
+    """Moderator
 
     Fields and methods
     """
@@ -67,7 +66,7 @@ DURATION = [(i, str(i) + ":00") for i in range(1, 25)]
 
 
 class WorkHour(models.Model):
-    """Work Hour.
+    """Work Hour
 
     Represents each individual moderator's work shifts
     Used for internal staff control

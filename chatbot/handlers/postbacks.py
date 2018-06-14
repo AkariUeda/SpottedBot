@@ -2,7 +2,6 @@ from chatbot.messages import simple_message, template_message
 from .handover import pass_thread_control
 from chatbot.models import Chat
 from celery import chain
-from chatbot.personality import PersonalityGen
 
 from django.conf import settings
 from django.urls import reverse
@@ -14,8 +13,6 @@ def postback_handler(uid, postback):
         'base_query': base_query,
         'send_spotted': send_spotted,
         'ask_question': ask_question,
-        'raw_solution_found': raw_solution_found,
-        'raw_solution_not_found': raw_solution_not_found,
         'other': other
     }
     if not Chat.is_standby(uid):
@@ -23,19 +20,13 @@ def postback_handler(uid, postback):
 
 
 def greetings(uid):
-    p = PersonalityGen()
-    greet = p.greetings
-    follow = p.polite_followback
-    hold = p.hold_spotted
-    lets = p.lets_talk
-    message = f'{greet} {follow}\n{hold} {lets}'
+    message = 'Olar! Tudo bom?\nSegura esse spotted aí! Vamos conversar primeiro\n:)'
     simple_message(uid, message)
     base_query(uid)
 
 
 def base_query(uid):
-    p = PersonalityGen()
-    message = p.base_messages
+    message = 'Me fala como que eu posso te ajudar'
     buttons = [
         {
             'type': 'postback',
@@ -44,12 +35,12 @@ def base_query(uid):
         },
         {
             'type': 'postback',
-            'title': 'Dúvidas ou problemas',
+            'title': 'Tirar dúvidas',
             'payload': 'ask_question'
         },
         {
             'type': 'postback',
-            'title': 'Nenhum dos dois!',
+            'title': 'Outro',
             'payload': 'other'
         },
     ]
@@ -62,9 +53,8 @@ def base_query(uid):
 
 
 def send_spotted(uid):
-    p = PersonalityGen()
-    message = p.send_spotted1
-    message2 = p.send_spotted2
+    message = 'Não digite ainda!\nNão aceitamos mais spotteds por inbox (privacidade e tal)'
+    message2 = 'Agora você manda pelo nosso site. Lá sua privacidade é garantida :)'
     url = settings.ROOT_URL + reverse('custom_auth:facebook_login')
     button = {
         'type': 'web_url',
@@ -80,23 +70,12 @@ def send_spotted(uid):
 
 
 def ask_question(uid):
-    message = 'Conta aí qual é a sua dúvida :)'
+    message = 'Conta qual é a sua dúvida que nós te responderemos em breve :)'
     simple_message.delay(uid, message)
-    Chat.set_accept_raw(uid)
-
-
-def raw_solution_found(uid):
-    message = 'Foi um prazer ajudar!'
-    Chat.set_raw_solution_found(uid)
-    simple_message.delay(uid, message)
-
-
-def raw_solution_not_found(uid):
-    message = 'Então espera um pouco que alguém já vem te ajudar <3'
-    Chat.set_raw_solution_not_found(uid)
-    chain(simple_message.si(uid, message), pass_thread_control.si(uid))()
+    pass_thread_control.delay(uid)
 
 
 def other(uid):
     message = 'Sem problemas! Fala aí como podemos te ajudar!'
-    chain(simple_message.si(uid, message), pass_thread_control.si(uid))()
+    simple_message.delay(uid, message)
+    pass_thread_control.delay(uid)

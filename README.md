@@ -1,99 +1,139 @@
 [![Build Status](https://travis-ci.org/SpottedBot/SpottedBot.svg?branch=master)](https://travis-ci.org/SpottedBot/SpottedBot) [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 
-[![forthebadge](https://forthebadge.com/images/badges/built-with-love.svg)](https://forthebadge.com)
+[![forthebadge](https://forthebadge.com/images/badges/fuck-it-ship-it.svg)](https://forthebadge.com) [![forthebadge](https://forthebadge.com/images/badges/built-with-love.svg)](https://forthebadge.com)
 
-# SpottedBot
+SpottedBot
+==========
 
 A platform for university students to send "spotteds", that aims to be completely automated using artificial intelligence to check for spam or inadequate messages.
 
-It's being used by many universities in Brazil as a state-of-the-art spotted automation system.
+How does it work?
+-------------
+Spotteds are submitted through the main app's page and their attachments are sent to Web of Trust's API to be evaluated. They are also sent to Google Safe Browsing and are only deemed safe if both reply that the links are safe.
 
-It's stable and [live](https://spottedsunicamp.herokuapp.com/) with more than five thousand users and about three hundred daily spotted submissions.
+Next, the spotted is sent to the SpottedAPI for evaluation. The SpottedAPI decides whether it should be posted to Facebook right away, rejected and deleted or sent to human evaluation.
 
-## Features
+If it is posted, notifications are sent through Facebook's Notification API to every person related to the spotted.
 
-SpottedBot is packed with various features. Check out some of them:
+If it is sent to human evaluation, moderators will then analyze the spotted's contents and either approve it for publication or reject it. The decision is again sent to the SpottedAPI to be incorporated into it.
 
-### For users
-- Users can easily submit spotteds though the web interface
-- Attachments can be added to the spotted, including picture URLs
-- Imgur integration for uploading of images
-- Facebook integration for user login (enables users to delete their spotteds later)
-- Ability to tag other users that have logged in using Facebook, leting they see the tagged posts in their dashboards.
-- The bot automatically scans spotteds to find names to tag
-- Users receive Facebook notifications when their spotteds are accepted or when they are tagged
-- Spotteds can be reported to the moderation or deleted by users and tagged users
-- All spotteds are anonymous to the moderation and to the general public. Only the poster and the tagged person(if allowed) know each other's identities
+## Messenger
 
-### For moderators
-- Spotteds are automatically posted to your Facebook page using the Graph API
-- Artificial intelligence learns from your moderation patterns and automatically approves or rejects spotteds, sending to you only the ones that it's insecure about
-- reCaptcha integration to prevent bot abuse
-- Integrated contact form
-- Easy to use interface to approve or reject spotteds
-- Attachments are processed using Google's Safe Browsing API and the Web of Trust API to ensure that no malicious links are posted nor shown to you
-- Includes an easy to setup chatbot for Messenger that engages with user's and serves as FAQ with fallback to humans only if presented with hard-to-answer questions
-- Automatically logs moderator activity to track and rank the most active moderators
-- Option to enable [CoinHive](https://coinhive.com/) and Google Ads.
+O SpotteBot também vem com um chatbot que você pode associar à sua página. Ele vai conversar com seus usuários, impedindo que eles enviem o conteúdo dos seus spotteds por inbox.
 
-## Pré Setup (in Portuguese)
+Caso o usuário tenha uma pergunta que o bot não saiba responder, ele passará o controle da conversa automaticamente para você, humano.
 
-A configuração do SpottedBot é relativamente simples. A maioria dos passos será para coleta de chaves de API usadas pelo bot. Nenhuma alteração é necessária no código, apesar de você ter a opção de alterar o CSS para personalizar seu bot.
+### Setup do Messenger Bot
 
-### Chaves de API
+Primeiro você irá adicionar duas variáveis de ambiente ao seu site. Elas são:
+* FACEBOOK_VERIFY_CHATBOT (Uma string qualquer que você vai usar novamente nos passos abaixo)
+* ROOT_URL (o domínio base do seu site, sem barra no final e sem http. ex: meusite.com)
 
-Vamos então seguir para a coleta das chaves. Boa parte delas é opcional e nenhuma deve custar nada.
+Para configurar o bot você precisa fazer algumas coisas:
+* Primeiro vá [na sua lista de apps](https://developers.facebook.com/apps/614202462290543/webhooks/) e selecione o seu app
+* Depois, no menu de _products_ à esquerda, clique no +
+* Procure _Messenger_ e clique em Set Up
+* Na nova tela, vá em _Token Generation_, selecione sua página e crie um novo token de acesso. Esse será seu novo token de página, que vai substituir o anterior que geramos.
+* Em _Webhooks_, clique em _Setup Webhooks_
+* Em _callback url_ coloque https://<seu-site>/hooks/messenger/
+* Em _Verify Token_ coloque a string que vc escolheu para FACEBOOK_VERIFY_CHATBOT
+* Em _Subscription Fields_ **selecione messages**, **messaging_postbacks**, **standby** e **messaging_handovers**
+* Clique em salvar. A página vai recarregar
+* Novamente em _Webhooks_, uma opção nova vai ter aparecido (_Select Page_). Selecione sua página lá e clique em Subscribe
 
-#### reCaptcha (Opcional)
+Agora, no Facebook, vá até a sua página. No canto superior direito dela, procure pela opção _Settings_.
+* Em _General_, marque a opção que permite que pessoas te enviem mensagens
+* Em _Messaging_, desabilite os assistentes de resposta se você tiver ativado
+* Em _Messager Platform_, marque a opção **Responses are partially automated, with some support by people**
+* Procure por _Subscribed Apps_, encontre seu app e coloque-o apenas como **Primary Receiver** e coloque _Page Inbox_ como **Secondary Receiver**
 
-A API do reCaptcha é opcional e usada durante a submissão de spotteds.
+# Setup
 
-Vá para a [página do reCaptcha](https://www.google.com/recaptcha/intro/) e efetue seu cadastro.
+## APIs e mais APIs
 
-Vai em *Register a new site* em domínio digite o domínio do seu site.
+Você vai precisar pegar chaves de várias APIs.
+Vamo das mais complicadas pra as mais simples:
 
-Se você tiver um domínio próprio, digite ele aqui. Senão, usaremos o Heroku para hospedagem. O formato do domínio no Heroku é `<nome-do-app>.herokuapp.com`
+### Facebook
 
-Você também pode colocar `localhost` se quiser fazer testes na sua máquina local.
+Antes de começar, certifique-se de que você é Admin da página que quer associar ao seu spotted.
 
-Em *client-side integration* você vai ver algo assim:
+* Começe virando um Dev do Facebook. [Clique aqui](https://developers.facebook.com/)
+* Crie um app pro seu spotted
+* Dentro do seu app, vá para `Settings -> Basic` e clique, no final, em `Add Plataform`
+ * Clique em `website` e digite o nome do seu domínio do heroku(https://unicampspotted.herokuapp.com por exemplo) e salve suas alterações
+ * Clique em `Add Plataform` de novo e adicione um `Facebook Canvas`. Em `Secure Canvas URL` digite seu site de novo e salve suas alterações
+* No seu app, vá para `App Review` e clique em `Make ___ Public?` e salve suas alterações
+* Vá em `Dashboard` e anote seu `App ID` e `App Secret`. Vamos usar eles mais tarde.
+
+Agora vamos pegar o Token da sua página.
+
+Siga [esse tutorial](https://medium.com/@Jenananthan/how-to-create-non-expiry-facebook-page-token-6505c642d0b1)
+
+Entre no [Graph Explorer](https://developers.facebook.com/tools/explorer/)
+
+* Em `Application`, selecione o app que acabou de criar
+* Em `Get Token`, selecione `Get User Access Token`
+* Na janelinha, selecione `manage_pages` e `publish_pages` e clique em `Get Access Token`
+* Clique em `Get Token` de novo e selecione a sua página.
+* Copie o Token inteiro e vá para o [Token Debugger](https://developers.facebook.com/tools/debug/accesstoken)
+* Cole o seu token e aperte em `Debug`
+* Lá em baixo, clique em `Extend Access Token`
+* Pegue esse Token novo, anote e guarde com sua vida
+
+Se você fez tudo certo, terminamos com o Facebook.
+
+### reCaptcha
+
+Vamos pegar umas chaves pro nosso reCaptcha agora. Ninguém gosta de bots enviando milhões de spotteds pra a gente e spammando nossa caixa, né?
+
+[Clica aqui](https://www.google.com/recaptcha/intro/) e se cadastra lá.
+
+Vai em `Register a new site` em domínio digita o domínio do seu site. Se você tiver um domínio próprio, digita ele aqui. Digita o do heroku tb(Ex: unicampspotted.herokuapp.com) sem o http e pá
+
+Em `client-side integration` você vai ver uma parada tipo assim:
 
 `<div class="g-recaptcha" data-sitekey="6LdeuwcUAAAAAOmN80hxQzWGMIVPqHhWkQPJQV4O"></div>`
 
-Pega esse `6LdeuwcUAAAAAOmN80hxQzWGMIVPqHhWkQPJQV4O` e anota como sua public key do reCaptcha. Vamos usar depois.
+Pega esse `6LdeuwcUAAAAAOmN80hxQzWGMIVPqHhWkQPJQV4O` e anota como sua public key do recaptcha
 
-Em *server side integration* pega e anota o `secret` como sua secret key do reCaptcha, que também vamos usar depois.
+Em `server side integration` pega e anota o `secret` como sua secret key do recaptcha
 
-#### Web of Trust (Opcional)
+Done.
 
-A API do WoT é usada para verificar os attachments enviados. Ela impede que links maliciosos sejam enviados.
+### Web of Trust
 
-Comece criando uma [conta na API](https://www.mywot.com/)
+Ninguém gosta de receber vírus ou pornografia como anexo, especialmente nos spotteds.
 
-Dentro do seu perfil, procure por *API*. Lá será possível criar um `token`. Anote-o como token do WoT.
+Vamos prevenir isso usando alguns filtros de URLs perigosas.
 
-#### Google Safe Browsing (Opcional)
+Cria uma conta [aqui](https://www.mywot.com/)
 
-Usado no mesmo lugar que o WoT para uma segunda camada de segurança.
+Dentro do seu perfil, procura por API
 
-Comece se tornando um dev na [Google Cloud](https://cloud.google.com/)
+Clica lá e cria um Token pra você. Guarda esse token tb
 
-Acesse o [console](https://console.cloud.google.com/apis/api/safebrowsing.googleapis.com/overview) da Google Safe Browsing API.
+### Google Safe Browsing
 
-Clique em *ENABLE*
+Ninguém melhor que o google pra filtrar urls né não diga aí
 
-Crie [credenciais](https://console.cloud.google.com/apis/credentials) para acessar a API.
+vira um dev do [Google Cloud](https://cloud.google.com/)
 
-Salve a *Key* como token do GSB.
+tenta [clicar aqui](https://console.cloud.google.com/apis/api/safebrowsing.googleapis.com/overview) pra acessar o console na Google Safe Browsing API.
 
-#### Google Ads (Opcional)
+Clica lá em `ENABLE`
 
-É bem difícil ser aceito pelo Google Ads com um site como esse, pois ele tem poucas páginas, mas você pode tentar se quiser.
+Vem [aqui agora](https://console.cloud.google.com/apis/credentials) e cria uma credencial pra você com acesso a tudo e pá
 
-[Crie uma conta](https://www.google.com/adsense/start/) no AdSense e guarde o `google_ad_client`.
+Pega a `Key` e guarda ela.
 
+### GoogleAds
 
-#### Imgur (Opcional)
+Se você quiser colocar google ads no seu site, [venha aqui](https://www.google.com/adsense/start/) e pegue o `google_ad_client`.
+
+Salve esse valor tb como seu cliente do Google Ads
+
+### Imgur
 
 Você também pode permitir que seus usuários façam upload de imagens. Essas imagens não ficam salvas no seu servidor. Elas são automaticamente enviadas para o imgur por meio da api deles.
 
@@ -107,152 +147,33 @@ A URL de callback pode ser qualquer coisa. Coloque algo como `https://<nome_do_s
 
 Copie e guarde as chaves que ele dá no final.
 
+### SpottedAPI
 
-#### SpottedAPI
+Guardei o melhor pro finak, uhu
 
-SpottedAPI é a API usada na análise de spotteds.
+Pra postar os spotteds bonitinho você precisa se comunicar com minha api.
 
-Para conseguir um token basta falar comigo por email: `gustavomaronato` (no gmail)
+Infelizmente só quem tem minha permissão pode ter uma key da minha api.
 
+Pede pra mim que eu provavelmente sou bem de boa em deixar *wink wink*
 
-#### Facebook
+# Finalmentes
 
-A GraphAPI do Facebook é usada para fazer login de usuários e para postar na página.
+Você pode clonar esse rep e rodar tudo local usando esses valores aí de cima dentro de um `.env`, ou pode ir adiante e jogar tudo no heroku direto.
 
-Comece se certificando de que você é admin da sua página de spotteds. Se não tiver uma, crie.
+Pra fazer isso, basta clicar no botão abaixo e colocar as paradas certas quando ele pedir. Você já deve ter tudo que precisa.
 
-Agora basta se [tornar um dev](https://developers.facebook.com/) e clicar em *criar app*.
-
-Dentro do seu app, você vera uma tela pedingo para *Adicionar produto*. Comece selecionando *Facebook Login*.
-
-Na criação do login, selecione *Web* e coloque a URL do seu site (ou `https://localhost:8000`) se for começar testando localmente. Clique em *Save* e *Continue*. Pronto.
-
-No menu da esquerda procure por *Facebook Login* e selecione *Settings* dentro dele.
-
-Em *Settings*, vá para *Valid OAuth Redirect URIs* e digite `https://<Seu-Domínio>/auth/facebook/login_response/`,
-trocando `<Seu-Domínio>` pelo domínio do seu site. Se for usar o Heroku, use `https://<nome_do_seu_spotted>.herokuapp.com`.
-Se for fazer testes locais, `https://localhost:8000/auth/facebook/login_response/`
-
-Clique em *Save Changes*.
-
-Agora, no menu da esquerda, procure por *Settings->Basic*. Em *App Domains* digite os domínios do seu app (`localhost` se testando localmente)
-
-Desça a tela até ver *Website*. Preencha com a url do seu site (ou `http://localhost:8000/`).
-
-Volte ao topo e anote os valores em *App ID* e *App Secret*.
-
-O próximo passo será gerar um token de acesso para seu app conseguir postar em sua página.
-
-Siga [esse tutorial](https://medium.com/@Jenananthan/how-to-create-non-expiry-facebook-page-token-6505c642d0b1) a partir do passo 2.
-
-***Atenção!** Na hora de selecionar as permissões do token, selecione `pages_messaging` caso queira usar o chatbot incluído!*
-
-Guarde o token de acesso e vamos agora para o setup local do seu SpottedBot!
-
-## Setup Local
-
-Os requerimentos do spottedbot são:
-- Python >=3.6.5
-- SQLite 3
-- PostgreSQL
-- Redis
-
-Comece [instalando Python 3.6.5 ou superior](https://www.python.org/)
-
-agora [instale SQLite 3](https://www.sqlite.org/index.html)
-
-e [PostgreSQL](http://initd.org/psycopg/)
-
-por fim, [instale o Redis](https://redis.io/).
-
-Para rodar localmente, recomendo que você use o [virtualenv](`https://virtualenv.pypa.io/en/stable/`) para isolar seus pacotes do SpottedBot do resto dos seus projetos.
-
-Depois de instalado, ative o `virtualenv` e rode:
-```
-pip install -r requirements.txt
-```
-para instalar as dependências.
-
-Agora rode:
-```
-python initialize.py
-```
-e siga as instruções.
-
-Crie um super usuário para acessar a tela de admin:
-```
-python manage.py createsuperuser
-```
-e teste seu app rodando:
-```
-./run.sh
-```
-*Para fechar, use ctrl+c*
-
-Esse comando faz 3 coisas:
-- Inicia o seu servido de Django
-- Inicia o servidor do Redis
-- Instancia um Celery worker que vai cuidar de jobs paralelos
-
-Para se conectar à API do Facebook para login e tal, é necessária uma conexão HTTPS (ou o uso de uma porta exposta - [veja abaixo](#exposição-de-portas-opcional)). Para iniciar uma versão do servidor com suporte limitado para HTTPS, execute:
-```
-./run-ssl.sh
-```
-
-Agora vamos testar seu login com o Facebook. Inicie seu app com `./run-ssl.sh`, acesse [seu app](https://localhost:8000) e clique em fazer login com facebook.
-
-Se tudo estiver configurado corretamente, você deve ser capaz de logar e uma conta será criada no site. Agora vá para [a tela de Admin](https://localhost:8000/admin) e faça o login com suas credenciais de super usuário.
-
-Nessa nova tela, vá em *Moderators-Adicionar* e selecione o usuário com seu nome. Clique em *Salvar* e depois em *Encerrar Sessão*.
-
-Volte para [seu app](https://localhost:8000), faça o login e vá na tela [Meus Spotteds](https://localhost:8000/dashboard/). A tela de moderação deve estar disponível.
-
-Experimente agora enviar um spotted e depois aprová-lo pela tela de moderação!
-
-### Exposição de portas (Opcional)
-(Obrigatório para teste local do Chatbot)
-Outra recomendação é que você instale algum serviço para expor seu app para a internet. Ele será útil enquanto você estiver testando seu app, configurando o seu chatbot e se quiser compartilhar a sua tela de desenvolvimento com alguém.
-
-Recomendo que você use o [ngrok](https://ngrok.com/) ou o [localtunnel](https://localtunnel.github.io/www/)
-
-*Obs: Se for expor sua porta, inicie seu servidor com `./run.sh`*
-
-Você agora deve ser capaz de abrir seu app usando o link fornecido pela ferramenta.
-
-*Obs: Esses links são temporários e mudam a cada vez que você roda o ngrok ou localtunnel*
-
-## Configurando o Chatbot pro Messenger (Opcional)
-
-Caso você queira usar o chatbot incluso, você deve configurar o messenger. Volte na página de configurações do seu App Facebook e clique no `+` para adicionar outro produto. Dessa vez você vai escolher *Messenger*.
-
-Na página de configuração do Messenger, vá para *Token Generation*, selecione sua página e gere um token(não vamos usar ele por enquanto)
-
-Agora vá em *Webhooks*, *Setup Webhooks*.
-
-Em *Callback URL*, digite `https://<Seu-Domínio>/hooks/messenger/`
-
-*Obs: se você estiver testando o site localmente, você deverá usar o domínio do localtunnel ou do ngrok, **não localhost***
-
-Em *Verify Token*, coloque a sequência de caracteres que você digitou em `Token de verificação do Messenger` quando rodou o [initialize.py](#setup-local)
-
-Agora selecione `messages`, `messaging_postbacks`, `standby`, `message_echoes` e `messaging_handovers` e aperte *Verify and Save*
-
-A página deve recarregar. Vá novamente em *Webhooks*, selecione sua página em *Select a Page* e clique em *Subscribe*
-
-Vamos configurar sua página agora. Vá até sua página no Facebook e clique em *Settings*. Na lista da esquerda, clique em *Messenger Platform*. Selecione *Responses are partially automated, with some support by people* e, em *Subscribed Apps*, marque o seu app como *Primary Receiver* e *Page Inbox* como *Secondary Receiver*.
-
-Pare o servidor (não o localtunnel/ngrok) e execute:
-```
-python manage.py setup_messenger
-```
-Inicie o servidor novamente, vá até sua página e abra uma janela de chat.
-
-
-## Subindo para o Heroku
-
-Para subir seu app para o Heroku, clique no botão abaixo e siga as instruções:
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
-## Todo
+## Heroku CLI
 
-- [ ] put all of these instructions in a wiki or docs
+Instala a [CLI do Heroku](https://devcenter.heroku.com/articles/heroku-cli)
+
+e executa os seguintes comandos, depois de logar na sua conta pelo CLI:
+
+`heroku run --app <nome-do-seu-app> python manage.py migrate`
+
+Agora você vai querer criar uma conta de superusuário. Com ela você vai conseguir adicionar moderadores e pá
+
+`heroku run --app <nome-do-seu-app> python manage.py createsuperuser`
+

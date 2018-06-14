@@ -23,9 +23,8 @@
         <div class="ui grid stackable">
             <div class="row centered">
                 <div class="six wide column">
-                    <form id="spotted_form" method="post" class="ui form">
+                    <form id="spotted_form" action="{% url 'spotteds:submit' %}" method="post" class="ui form">
                         {% csrf_token %}
-                        <input name="action" type="hidden" value="spottedform">
                         <div style="display: none" class="ui top attached tabular menu">
                             <a style="pointer-events: none" class="item active" data-tab="0" data-id="0">Login</a>
                             <a style="pointer-events: none" class="item" data-tab="1" data-id="1">Mensagem</a>
@@ -35,8 +34,10 @@
                         <div style="text-align: center;" class="ui transition fade in top attached tab active" data-tab="0">
                             {% if not user.is_authenticated %}
                             <h1>Envie Spotteds aqui</h1>
-                            <h2>Conecte-se ao Facebook para criar sua conta</h2>
-                            <div class="fb-login-button" data-width="300" data-max-rows="1" data-size="large" data-button-type="continue_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="true" data-onlogin='OnFbLogin()'></div>
+                            <h2>Clique no botão abaixo para enviar um Spotted</h2>
+                            <a href="{% url 'custom_auth:facebook_login' %}">
+                                <img style="max-height: 50px;" src="{% static 'main/img/login.png' %}">
+                            </a>
                             <br>
                             <div class="ui divider"></div>
                             <a data-position="top center" href="#" id="refuse_button" style="color: grey" onclick="refuse_signin();"><small>Quero enviar sem me inscrever</small></a>
@@ -49,13 +50,13 @@
                             {% if not user.is_authenticated and ENABLE_IMGUR_UPLOAD %}
                             <small style="color: blue">Obs: usuários inscritos podem fazer upload de imagens</small>
                             {% endif %}</p>
-                            <div class="field {% if forms.spottedform.message.errors.as_text %}error{% endif %}">
-                                <label>{{ forms.spottedform.message.label}}</label>
-                                <span style="color: red" class="small">{{ forms.spottedform.message.errors.as_text }}</span>
-                                {{ forms.spottedform.message }}
+                            <div class="field {% if spottedform.message.errors.as_text %}error{% endif %}">
+                                <label>{{ spottedform.message.label}}</label>
+                                <span style="color: red" class="small">{{ spottedform.message.errors.as_text }}</span>
+                                {{ spottedform.message }}
                                 <br><br>
-                                <label>{{ forms.spottedform.attachment.label}}</label>
-                                {{ forms.spottedform.attachment }}
+                                <label>{{ spottedform.attachment.label}}</label>
+                                {{ spottedform.attachment }}
                             </div>
                             {% if user.is_authenticated and ENABLE_IMGUR_UPLOAD %}
                                 {% include "main/imgur_form.html" %}
@@ -78,18 +79,18 @@
                             <span style="color: blue" id="target_found_tip"></span>
                             <div id="target_found_checkbox_div" style="display: none;">
                                 <br><br>
-                                <div class="ui toggle checkbox {% if forms.spottedform.share_with_crush.errors.as_text %}error{% endif %}">
-                                    <span style="color: red" class="small">{{ forms.spottedform.share_with_crush.errors.as_text }}</span>
-                                    {{ forms.spottedform.share_with_crush }}
-                                    <label>{{ forms.spottedform.share_with_crush.label}}</label>
+                                <div class="ui toggle checkbox {% if spottedform.share_with_crush.errors.as_text %}error{% endif %}">
+                                    <span style="color: red" class="small">{{ spottedform.share_with_crush.errors.as_text }}</span>
+                                    {{ spottedform.share_with_crush }}
+                                    <label>{{ spottedform.share_with_crush.label}}</label>
                                 </div>
                             </div>
                             <br><br>
-                            <div id="target_name" class="field {% if forms.spottedform.target_name.errors.as_text %}error{% endif %}">
-                                <label>{{ forms.spottedform.target_name.label}}</label>
-                                <span style="color: red" class="small">{{ forms.spottedform.target_name.errors.as_text }}</span>
-                                {{ forms.spottedform.target_name }}
-                                {{ forms.spottedform.target_id }}
+                            <div id="target_name" class="field {% if spottedform.target_name.errors.as_text %}error{% endif %}">
+                                <label>{{ spottedform.target_name.label}}</label>
+                                <span style="color: red" class="small">{{ spottedform.target_name.errors.as_text }}</span>
+                                {{ spottedform.target_name }}
+                                {{ spottedform.target_id }}
                             </div>
                             <br><br>
                             <div class="ui divider"></div>
@@ -99,20 +100,15 @@
                             </div>
                         </div>
                         <div class="ui transition fade in top attached tab" data-tab="3">
-                            {% if ENABLE_RECAPTCHA %}
                             <h1>Quase lá!</h1>
                             <p>Precisamos ter certeza de que você está mesmo aí</p>
                             <br>
-                            {{ forms.spottedform.captcha }}
+                            {{ spottedform.captcha }}
                             <br><br>
-                            {% else %}
-                            <h1>Tudo ok?</h1>
-                            <p>É agora ou nunca!</p>
-                            {% endif %}
                             <div class="ui divider"></div>
                             <div style="text-align: right;">
                                 <button type="button" class="ui button red" onclick="previous_tab(3)"><i class="icon angle left"></i>Anterior</button>
-                                <button id="spotted_submit_button" {% if ENABLE_RECAPTCHA %} disabled {% endif %} class="ui button blue"><i class="send icon"></i> Enviar Spotted</button>
+                                <button id="spotted_submit_button" disabled class="ui button blue"><i class="send icon"></i> Enviar Spotted</button>
                             </div>
                         </div>
                     </div>
@@ -198,7 +194,7 @@
         <div class="ui column aligned center">
             <div class="ui inverted huge statistic">
                 <div class="value">
-                    {{ total_users | stat_order }}
+                    {{ users | length | stat_order }}
                 </div>
                 <div class="label">
                     <i class="icon heart"></i>Crushes Ativos
@@ -206,7 +202,7 @@
             </div>
             <div class="ui inverted huge statistic">
                 <div class="value">
-                    {{ total_spotteds | stat_order }}
+                    {{ spotteds.0.total_spotteds | stat_order }}
                 </div>
                 <div class="label">
                     <i class="icon send"></i> Spotteds Enviados
@@ -232,33 +228,32 @@
     </div>
     <br>
     <div class="ui text container">
-        <form method="post">
+        <form action="{% url 'contact' %}" method="post">
             {% csrf_token %}
-            <input name="action" type="hidden" value="contactform">
             <div class="ui equal width form">
                 <div class="fields">
-                    <div id="name" class="field {% if forms.contactform.name.errors.as_text %}error{% endif %}">
-                        <label {% if not forms.contactform.name.errors.as_text %}style="color: white;"{% endif %} >{{ forms.contactform.name.label}}</label>
-                        <span style="color: red" class="small">{{ forms.contactform.name.errors.as_text }}</span>
-                        {{ forms.contactform.name }}
+                    <div id="name" class="field {% if contactform.name.errors.as_text %}error{% endif %}">
+                        <label {% if not contactform.name.errors.as_text %}style="color: white;"{% endif %} >{{ contactform.name.label}}</label>
+                        <span style="color: red" class="small">{{ contactform.name.errors.as_text }}</span>
+                        {{ contactform.name }}
                     </div>
-                    <div id="email" class="field {% if forms.contactform.email.errors.as_text %}error{% endif %}">
-                        <label {% if not forms.contactform.email.errors.as_text %}style="color: white;"{% endif %} >{{ forms.contactform.email.label}}</label>
-                        <span style="color: red" class="small">{{ forms.contactform.email.errors.as_text }}</span>
-                        {{ forms.contactform.email }}
+                    <div id="email" class="field {% if contactform.email.errors.as_text %}error{% endif %}">
+                        <label {% if not contactform.email.errors.as_text %}style="color: white;"{% endif %} >{{ contactform.email.label}}</label>
+                        <span style="color: red" class="small">{{ contactform.email.errors.as_text }}</span>
+                        {{ contactform.email }}
                     </div>
-                    <div id="subject" class="field {% if forms.contactform.subject.errors.as_text %}error{% endif %}">
-                        <label {% if not forms.contactform.subject.errors.as_text %}style="color: white;"{% endif %} >{{ forms.contactform.subject.label}}</label>
-                        <span style="color: red" class="small">{{ forms.contactform.subject.errors.as_text }}</span>
-                        {{ forms.contactform.subject }}
+                    <div id="subject" class="field {% if contactform.subject.errors.as_text %}error{% endif %}">
+                        <label {% if not contactform.subject.errors.as_text %}style="color: white;"{% endif %} >{{ contactform.subject.label}}</label>
+                        <span style="color: red" class="small">{{ contactform.subject.errors.as_text }}</span>
+                        {{ contactform.subject }}
                     </div>
                 </div>
             </div>
             <div class="ui form">
-                <div id="text" class="field {% if forms.contactform.text.errors.as_text %}error{% endif %}">
-                    <label {% if not forms.contactform.text.errors.as_text %}style="color: white;"{% endif %} >{{ forms.contactform.text.label}}</label>
-                    <span style="color: red" class="small">{{ forms.contactform.text.errors.as_text }}</span>
-                    {{ forms.contactform.text }}
+                <div id="text" class="field {% if contactform.text.errors.as_text %}error{% endif %}">
+                    <label {% if not contactform.text.errors.as_text %}style="color: white;"{% endif %} >{{ contactform.text.label}}</label>
+                    <span style="color: red" class="small">{{ contactform.text.errors.as_text }}</span>
+                    {{ contactform.text }}
                 </div>
             </div>
 
@@ -277,27 +272,26 @@
     </div>
     <br>
     <div class="ui text center aligned container">
-        <form method="post">
+        <form action="{% url 'report' %}" method="post">
             {% csrf_token %}
-            <input name="action" type="hidden" value="reportform">
             <div class="column four wide">
                 <div class="fields">
-                    <div id="number" class="field {% if forms.reportform.number.errors.as_text %}error{% endif %}">
-                        <span style="color: red" class="small">{{ forms.reportform.number.errors.as_text }}</span>
+                    <div id="number" class="field {% if reportform.number.errors.as_text %}error{% endif %}">
+                        <span style="color: red" class="small">{{ reportform.number.errors.as_text }}</span>
                         <div class="ui labeled input">
                             <div class="ui label">
                                 Spotted #
                             </div>
-                            {{ forms.reportform.number }}
+                            {{ reportform.number }}
                         </div>
                     </div>
                 </div>
             </div>
             <div class="ui form">
-                <div id="text" class="field {% if forms.reportform.text.errors.as_text %}error{% endif %}">
-                    <label style="text-align: left; {% if not forms.reportform.text.errors.as_text %}color: white;{% endif %}" >{{ forms.reportform.text.label}}</label>
-                    <span style="color: red" class="small">{{ forms.reportform.text.errors.as_text }}</span>
-                    {{ forms.reportform.text }}
+                <div id="text" class="field {% if reportform.text.errors.as_text %}error{% endif %}">
+                    <label style="text-align: left; {% if not reportform.text.errors.as_text %}color: white;{% endif %}" >{{ reportform.text.label}}</label>
+                    <span style="color: red" class="small">{{ reportform.text.errors.as_text }}</span>
+                    {{ reportform.text }}
                 </div>
             </div>
 

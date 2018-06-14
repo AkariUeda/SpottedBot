@@ -1,44 +1,41 @@
-from django.shortcuts import HttpResponse
+from django.shortcuts import HttpResponse, render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.views import View
-from django.utils.decorators import method_decorator
+from .forms import TokenForm
 # Create your views here.
 
 
 # The views here are for debugging of requests and to mimic the behavior of the API
 
 
-@method_decorator(csrf_exempt, name='dispatch')
-class CSRFExemptView(View):
-    pass
+@csrf_exempt
+def process_new_post(request):
+
+    print(request.POST['message'])
+
+    return JsonResponse({'action': 'moderation', 'suggestion': ''})
 
 
-class ProcessNewPost(CSRFExemptView):
-    def post(self, request):
-        print(request.POST['message'])
-        return JsonResponse({'action': 'moderation', 'suggestion': ''})
+@csrf_exempt
+def process_approved(request):
+    print('API Approved ' + request.POST['message'])
+    return HttpResponse('')
 
 
-class ProcessApproved(CSRFExemptView):
-    def post(self, request):
-        print('API Approved ' + request.POST['message'])
-        return HttpResponse('')
+@csrf_exempt
+def process_rejected(request):
+    print('API Reject ' + request.POST['reason'])
+    return HttpResponse('')
 
 
-class ProcessRejected(CSRFExemptView):
-    def post(self, request):
-        print('API Reject ' + request.POST['reason'])
-        return HttpResponse('')
+@csrf_exempt
+def process_deleted(request):
+    print('API Delete ' + request.POST['by'])
+    return HttpResponse('')
 
 
-class ProcessDeleted(CSRFExemptView):
-    def post(self, request):
-        print('API Delete ' + request.POST['by'])
-        return HttpResponse('')
-
-
-class RejectOptions(CSRFExemptView):
+@csrf_exempt
+def reject_options(request):
     data = {
         "opt_1": "Flood",
         "opt_2": "Off-topic",
@@ -49,12 +46,11 @@ class RejectOptions(CSRFExemptView):
         "opt_7": "Spam",
         "opt_8": "Outro"
     }
-
-    def get(self, request):
-        return JsonResponse(self.data)
+    return JsonResponse(data)
 
 
-class MyDeleteOptions(CSRFExemptView):
+@csrf_exempt
+def my_delete_options(request):
     data = {
         "opt_1": "Digitei errado",
         "opt_2": "Crush errado",
@@ -63,12 +59,11 @@ class MyDeleteOptions(CSRFExemptView):
         "opt_5": "Prefiro não dizer",
         "opt_8": "Outro"
     }
-
-    def get(self, request):
-        return JsonResponse(self.data)
+    return JsonResponse(data)
 
 
-class ForMeDeleteOptions(CSRFExemptView):
+@csrf_exempt
+def forme_delete_options(request):
     data = {
         "opt_1": "Ofensivo",
         "opt_2": "Sexual",
@@ -78,24 +73,25 @@ class ForMeDeleteOptions(CSRFExemptView):
         "opt_6": "Prefiro não dizer",
         "opt_8": "Outro"
     }
-
-    def get(self, request):
-        return JsonResponse(self.data)
+    return JsonResponse(data)
 
 
-class CoinHiveStats(CSRFExemptView):
-    def get(self, request):
-        print('Got coinhivestats')
-        return HttpResponse('')
+def get_token(request):
+
+    if request.method == 'POST':
+
+        form = TokenForm(request.POST)
+
+        if form.is_valid():
+
+            return JsonResponse(form.check(), safe=False)
+
+    else:
+        form = TokenForm()
+
+    return render(request, 'api/token.html', {'form': form})
 
 
-class SubmitMessageLog(CSRFExemptView):
-    def post(self, request):
-        print('Submitted message log')
-        return HttpResponse('')
-
-
-class ProcessRawBotMessage(CSRFExemptView):
-    def post(self, request):
-        print('Processing the message', request.POST['message'])
-        return HttpResponse({'result_status': True, 'result': 'Base solution'})
+def coinhivestats(request):
+    print('Got coinhivestats')
+    return HttpResponse('')

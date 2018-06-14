@@ -30,8 +30,6 @@ SECRET_KEY = str(os.environ.get('DJANGO_SECRET'))
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = eval(str(os.environ.get('DEBUG', 'False')).capitalize())
-
-# manage.py test mode that disables fb connection stuff
 TEST_MODE = eval(str(os.environ.get('TEST_MODE', 'False')).capitalize())
 
 ALLOWED_HOSTS = ['*']
@@ -56,10 +54,6 @@ INSTALLED_APPS = [
 
     'captcha',
 ]
-
-if DEBUG:
-    INSTALLED_APPS.append('sslserver')
-
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -87,10 +81,8 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'main.context_processors.enable_mod_shift',
                 'main.context_processors.enable_imgur_upload',
-                'main.context_processors.enable_recaptcha',
                 'main.context_processors.enable_ad_tag',
                 'main.context_processors.ad_slot',
-                'main.context_processors.facebook_app_id',
                 'main.context_processors.enable_coinhive'
             ],
         },
@@ -171,7 +163,7 @@ DATABASES['default'].update(db_from_env)
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-LOGIN_URL = '/auth/facebook/login/'
+LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/dashboard/'
 
 DEFAULT_CONTACT_EMAIL = str(os.environ.get('EMAIL_ACCOUNT'))
@@ -206,8 +198,8 @@ RECAPTCHA_PRIVATE_KEY = os.environ.get('RECAPTCHA_PRIVATE_KEY')
 NOCAPTCHA = True
 
 # Imgur stuff
-IMGUR_CLIENT = os.environ.get('IMGUR_CLIENT')
-IMGUR_SECRET = os.environ.get('IMGUR_SECRET')
+IMGUR_CLIENT = os.environ.get('IMGUR_CLIENT', False)
+IMGUR_SECRET = os.environ.get('IMGUR_SECRET', False)
 
 # Web Of Trust
 WOT_SECRET = os.environ.get('WOT_SECRET')
@@ -216,7 +208,7 @@ WOT_SECRET = os.environ.get('WOT_SECRET')
 GSB_SECRET = os.environ.get('GSB_SECRET')
 
 # Spotted API
-SPOTTED_API_URL = os.environ.get('SPOTTED_API_URL', "http://spottedapi.herokuapp.com")
+SPOTTED_API_URL = "http://spottedapi.herokuapp.com"
 SPOTTED_API_SECRET = os.environ.get('SPOTTED_API_SECRET')
 
 # Celery stuff
