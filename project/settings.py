@@ -183,7 +183,7 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 SERVER_EMAIL = str(os.environ.get('EMAIL_ACCOUNT'))
 
-ADMINS = [('Admin', str(os.environ.get('ADMIN_ACCOUNT'))), ]
+ADMINS = eval(os.environ.get('ADMIN_ACCOUNT', "[('Admin', ), ]"))
 
 
 # Moderation Hours
