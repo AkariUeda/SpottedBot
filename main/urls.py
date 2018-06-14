@@ -13,36 +13,36 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import url
+from django.urls import path
 from . import views
-from custom_auth.views import facebook_login
+from custom_auth.views import FacebookLogin
 
 urlpatterns = [
     # /+
-    url(r'^$', views.index, name='index'),
-    url(r'^login/$', facebook_login),
-    url(r'^about/$', views.about, name='about'),
-    url(r'^dashboard/$', views.dashboard, name='dashboard'),
+    path('', views.Index.as_view(), name='index'),
+    path('login/', FacebookLogin.as_view()),
+    path('about/', views.About.as_view(), name='about'),
+    path('dashboard/', views.Dashboard.as_view(), name='dashboard'),
 
-    url(r'^contact/$', views.contact, name='contact'),
-    url(r'^report/$', views.report, name='report'),
+    path('my/', views.MySpotteds.as_view(), name='my_spotteds'),
+    path('my_delete_options/', views.MyDeleteOptions.as_view(), name='my_delete_options'),
 
-    url(r'^my/$', views.my_spotteds, name='my_spotteds'),
-    url(r'^my_delete_options/$', views.my_delete_options, name='my_delete_options'),
+    path('for-me/', views.ForMeSpotteds.as_view(), name='forme_spotteds'),
+    path('forme_delete_options/', views.ForMeDeleteOptions.as_view(), name='forme_delete_options'),
 
-    url(r'^for-me/$', views.forme_spotteds, name='forme_spotteds'),
-    url(r'^forme_delete_options/$', views.forme_delete_options, name='forme_delete_options'),
+    path('delete_spotted/', views.DeleteSpotted.as_view(), name='delete_spotted'),
+    path('dismiss_submit/', views.DismissSubmit.as_view(), name='dismiss_submit'),
 
-    url(r'^delete_spotted/$', views.delete_spotted, name='delete_spotted'),
-    url(r'^dismiss_submit/$', views.dismiss_submit, name='dismiss_submit'),
+    path('search/', views.Search.as_view(), name='search'),
 
-    url(r'^search/$', views.search, name='search'),
+    path('prefetch_facebook_users/', views.PrefetchFacebookUsernames.as_view(), name='prefetch_facebook_users'),
 
-    url(r'^prefetch_facebook_users/$', views.prefetch_facebook_usernames, name='prefetch_facebook_users'),
+    path('imgur_upload/', views.ImgurUpload.as_view(), name='upload_image'),
 
-    url(r'^imgur_upload/$', views.imgur_image_upload, name='upload_image'),
+    path('coinhive/', views.Coinhive.as_view(), name='coinhive'),
 
-    url(r'^coinhive/$', views.coinhive, name='coinhive'),
+    path('coinhive_stats/', views.GetCoinhiveStats.as_view(), name='get_coinhive_stats'),
 
-    url(r'^coinhive_stats/$', views.get_coinhive_stats, name='get_coinhive_stats'),
+    path('get_nag/', views.GetNagMessage.as_view(), name='get_nag_message'),
+    path('update_nag/', views.UpdateNagMessage.as_view(), name='update_nag_message'),
 ]
