@@ -4,10 +4,6 @@ from collections import OrderedDict
 
 
 def handler(messages):
-    """Initial message handler.
-
-    Redirects requests to appropriate handlers.
-    """
     handlers = OrderedDict([
         ('standby', standby.standby_handler),
         ('messaging', messaging.message_and_postback_and_handover_handler)

@@ -1,15 +1,6 @@
 import sys
 from django.core import mail
 from django.views.debug import ExceptionReporter
-from celery import shared_task
-
-
-@shared_task
-def celery_admin_mail(subject, message, html):
-    mail.mail_admins(
-        subject, message, fail_silently=True,
-        html_message=html
-    )
 
 
 def exception_email(request, e):
@@ -20,7 +11,10 @@ def exception_email(request, e):
     except AttributeError:
         subject = "Unkown Error"
     message = reporter.get_traceback_text()
-    celery_admin_mail.delay(subject, message, reporter.get_traceback_html())
+    mail.mail_admins(
+        subject, message, fail_silently=True,
+        html_message=reporter.get_traceback_html()
+    )
 
 
 def no_request_exception(tb, e):
@@ -29,4 +23,7 @@ def no_request_exception(tb, e):
     except AttributeError:
         subject = "Unkown Error"
     message = tb
-    celery_admin_mail.delay(subject, message, tb)
+    mail.mail_admins(
+        subject, message, fail_silently=True,
+        html_message=tb
+    )
