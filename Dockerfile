@@ -20,4 +20,4 @@ RUN chmod a+x /docker-entrypoint.sh
 
 ENTRYPOINT [ "/docker-entrypoint.sh" ]
 
-CMD gunicorn -w 2 -b 0.0.0.0:8000 project.wsgi
+CMD gunicorn -w 2 -b 0.0.0.0:8000 project.wsgi --log-file -
