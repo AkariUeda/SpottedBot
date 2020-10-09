@@ -10,10 +10,10 @@ import json
 
 @property
 def has_facebook(self):
-    return hasattr(self, 'facebookuser')
+    return hasattr(self, "facebookuser")
 
 
-User.add_to_class('has_facebook', has_facebook)
+User.add_to_class("has_facebook", has_facebook)
 
 
 class FacebookUser(models.Model):
@@ -22,10 +22,7 @@ class FacebookUser(models.Model):
     Has some info about the Facebook OAuth user.
     """
 
-    user = models.OneToOneField(
-        User,
-        on_delete=models.CASCADE
-    )
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     access_token = models.TextField()
     # Scope User ID
     social_id = models.TextField(unique=True)
@@ -39,7 +36,7 @@ class FacebookUser(models.Model):
     # Direct link to user's profile
     link = models.URLField(max_length=2000)
     # Allowed scopes
-    scopes = models.CharField(max_length=2000, default='[]')
+    scopes = models.CharField(max_length=2000, default="[]")
 
     @property
     def scope_list(self):
@@ -49,17 +46,23 @@ class FacebookUser(models.Model):
     def is_expired(self):
 
         # Returns true if expired. False otherwise
-        return timezone.now() > self.updated_at + datetime.timedelta(seconds=self.expires)
+        return timezone.now() > self.updated_at + datetime.timedelta(
+            seconds=self.expires
+        )
 
     @property
     def thumbnail(self):
         """50x50 thumbnail."""
-        return "https://graph.facebook.com/{}/picture?width=50&height=50".format(self.social_id)
+        return "https://graph.facebook.com/{}/picture?width=50&height=50".format(
+            self.social_id
+        )
 
     @property
     def hd_thumbnail(self):
         """500x500 thumbnail."""
-        return "https://graph.facebook.com/{}/picture?width=500&height=500".format(self.social_id)
+        return "https://graph.facebook.com/{}/picture?width=500&height=500".format(
+            self.social_id
+        )
 
     @property
     def picture(self):
@@ -67,7 +70,9 @@ class FacebookUser(models.Model):
         return self.hd_thumbnail
 
     @staticmethod
-    def create_or_update(social_id, access_token, expires, first_name, last_name, name, link, scopes):
+    def create_or_update(
+        social_id, access_token, expires, first_name, last_name, name, link, scopes
+    ):
         """Create or Update a Facebook User.
 
         Receives a social_id and, if not yet saved, creates a new FacebookUser
@@ -86,11 +91,12 @@ class FacebookUser(models.Model):
             obj.link = link
             obj.scopes = json.dumps(scopes)
         else:
+
             def f_usname(name, n=0):
                 """Appends n to the end of the username, automatically adding 1 if exists."""
                 name = slugify(name)
-                if not User.objects.filter(username=name + '_' + str(n)).exists():
-                    return name + '_' + str(n)
+                if not User.objects.filter(username=name + "_" + str(n)).exists():
+                    return name + "_" + str(n)
                 return f_usname(name, n + 1)
 
             # If it is not found, create a new user and then a new facebookuser

@@ -8,18 +8,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('spotteds', '0007_auto_20170516_1401'),
+        ("spotteds", "0007_auto_20170516_1401"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='pendingspotted',
-            name='share_with_crush',
+            model_name="pendingspotted",
+            name="share_with_crush",
             field=models.BooleanField(default=True),
         ),
         migrations.AddField(
-            model_name='spotted',
-            name='share_with_crush',
+            model_name="spotted",
+            name="share_with_crush",
             field=models.BooleanField(default=True),
         ),
     ]

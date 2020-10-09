@@ -2,33 +2,36 @@ from django.core.management.base import BaseCommand
 from spotteds.models import Spotted
 from datetime import timedelta
 from django.utils import timezone
+
 now = timezone.now()
 
 
 class Command(BaseCommand):
-    help = 'Deletes old spotteds'
+    help = "Deletes old spotteds"
 
     def add_arguments(self, parser):
 
         # Days
-        parser.add_argument('days', type=int, help='Deletes spotteds older than this number of days')
+        parser.add_argument(
+            "days", type=int, help="Deletes spotteds older than this number of days"
+        )
 
         # Commit deletion
         parser.add_argument(
-            '--commit',
-            action='store_true',
-            dest='commit',
+            "--commit",
+            action="store_true",
+            dest="commit",
             default=False,
-            help='Whether or not to commit the Spotted deletion',
+            help="Whether or not to commit the Spotted deletion",
         )
 
     def handle(self, *args, **options):
 
         # get the lookup days from args
-        days = int(options['days'])
+        days = int(options["days"])
 
         # Get whether or not the changes are to be commited
-        commit = options['commit']
+        commit = options["commit"]
 
         return delete_executer(days, commit)
 
@@ -42,6 +45,10 @@ def delete_executer(days, commit):
 
     if commit:
         [s.delete() for s in spotteds]
-        return '{} spotteds from {} days flushed successfully.'.format(len(spotteds), days)
+        return "{} spotteds from {} days flushed successfully.".format(
+            len(spotteds), days
+        )
     else:
-        return '{} spotteds from {} days flushed successfully. (not committed)'.format(len(spotteds), days)
+        return "{} spotteds from {} days flushed successfully. (not committed)".format(
+            len(spotteds), days
+        )

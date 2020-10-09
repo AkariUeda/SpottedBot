@@ -8,33 +8,63 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('spotteds', '0008_auto_20170704_1418'),
+        ("spotteds", "0008_auto_20170704_1418"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='pendingspotted',
-            name='author',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='pending_authored', to=settings.AUTH_USER_MODEL),
+            model_name="pendingspotted",
+            name="author",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="pending_authored",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AlterField(
-            model_name='pendingspotted',
-            name='target',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='pending_targeted', to=settings.AUTH_USER_MODEL),
+            model_name="pendingspotted",
+            name="target",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="pending_targeted",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AlterField(
-            model_name='spotted',
-            name='approver',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='approved_spotteds', to='moderation.Moderator'),
+            model_name="spotted",
+            name="approver",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="approved_spotteds",
+                to="moderation.Moderator",
+            ),
         ),
         migrations.AlterField(
-            model_name='spotted',
-            name='author',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='authored', to=settings.AUTH_USER_MODEL),
+            model_name="spotted",
+            name="author",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="authored",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AlterField(
-            model_name='spotted',
-            name='target',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='targeted', to=settings.AUTH_USER_MODEL),
+            model_name="spotted",
+            name="target",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="targeted",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
     ]

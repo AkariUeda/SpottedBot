@@ -17,11 +17,15 @@ from django.urls import path
 from django.contrib.auth.views import logout
 from . import views
 
-app_name = 'social_login'
+app_name = "social_login"
 
 urlpatterns = [
     # /custom_auth/+
-    path('facebook/login/', views.FacebookLogin.as_view(), name='facebook_login'),
-    path('facebook/login_response/', views.LoginResponse.as_view(), name='facebook_login_response'),
-    path('logout/', logout, {'next_page': '/'}, name='logout'),
+    path("facebook/login/", views.FacebookLogin.as_view(), name="facebook_login"),
+    path(
+        "facebook/login_response/",
+        views.LoginResponse.as_view(),
+        name="facebook_login_response",
+    ),
+    path("logout/", logout, {"next_page": "/"}, name="logout"),
 ]

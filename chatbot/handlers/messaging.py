@@ -16,48 +16,44 @@ def message_handler(uid, message):
         return base_query(uid)
 
     # Set last sent raw message
-    Chat.set_last_raw_message(uid, message['text'])
+    Chat.set_last_raw_message(uid, message["text"])
     # Process raw message
-    response = api_process_raw_bot_message(message['text'])
-    result = response['result']
-    result_status = response['result_status']
+    response = api_process_raw_bot_message(message["text"])
+    result = response["result"]
+    result_status = response["result_status"]
 
     if result_status:
         # Some response was found
         buttons = [
             {
-                'type': 'postback',
-                'title': 'Era isso :)',
-                'payload': 'raw_solution_found'
+                "type": "postback",
+                "title": "Era isso :)",
+                "payload": "raw_solution_found",
             },
             {
-                'type': 'postback',
-                'title': 'Não ajudou :(',
-                'payload': 'raw_solution_not_found'
-            }
+                "type": "postback",
+                "title": "Não ajudou :(",
+                "payload": "raw_solution_not_found",
+            },
         ]
-        payload = {
-            'template_type': 'button',
-            'text': result,
-            'buttons': buttons
-        }
+        payload = {"template_type": "button", "text": result, "buttons": buttons}
         return template_message.delay(uid, payload)
 
     # If no response was found, handover to human
     Chat.set_raw_solution_not_found(uid)
-    message = 'Boa pergunta :p\nVou consultar os universitários e já volto'
+    message = "Boa pergunta :p\nVou consultar os universitários e já volto"
     chain(simple_message.si(uid, message), pass_thread_control.si(uid))()
 
 
 def message_and_postback_and_handover_handler(messages):
     handlers = {
-        'postback': postback_handler,
-        'message': message_handler,
-        'pass_thread_control': handover_handler
+        "postback": postback_handler,
+        "message": message_handler,
+        "pass_thread_control": handover_handler,
     }
     for message in messages:
-        sender = message['sender']['id']
-        if message.get('message', False) and message['message'].get('is_echo', False):
+        sender = message["sender"]["id"]
+        if message.get("message", False) and message["message"].get("is_echo", False):
             # Ignore echoes from the bot
             continue
         for handle_key, handle_func in handlers.items():

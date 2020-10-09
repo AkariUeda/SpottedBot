@@ -7,7 +7,7 @@ def get_settings():
 
     api_url = settings.SPOTTED_API_URL
     token = settings.SPOTTED_API_SECRET
-    headers = {'Authorization': 'Token ' + token}
+    headers = {"Authorization": "Token " + token}
     return api_url, token, headers
 
 
@@ -20,13 +20,13 @@ def api_process_new_post(instance):
 
     # Payload
     data = {
-        'message': instance.message,
-        'is_safe': instance.is_attachment_safe,
-        'has_attachment': instance.has_attachment
+        "message": instance.message,
+        "is_safe": instance.is_attachment_safe,
+        "has_attachment": instance.has_attachment,
     }
 
     # Resolve URL
-    url = api_url + reverse('api:process_new_post')
+    url = api_url + reverse("api:process_new_post")
 
     # Send payload to API
     response = requests.post(url, headers=headers, data=data)
@@ -35,9 +35,9 @@ def api_process_new_post(instance):
         # Check for the required response data
         try:
             # If the API has decided that the post should be posted right away, do that
-            if response.json()['action'] == 'approve':
-                instance.suggestion = response.json()['suggestion']
-                instance.api_id = response.json()['api_id']
+            if response.json()["action"] == "approve":
+                instance.suggestion = response.json()["suggestion"]
+                instance.api_id = response.json()["api_id"]
                 instance.save()
                 # Only auto post if not anonymous
                 if instance.author is not None:
@@ -46,14 +46,14 @@ def api_process_new_post(instance):
                 return True
 
             # If the API has decided that the post should be rejected, do that
-            elif response.json()['action'] == 'reject':
+            elif response.json()["action"] == "reject":
                 instance.delete()
                 return True
 
             # Send to human evaluation, if needed
-            elif response.json()['action'] == 'moderation':
-                instance.suggestion = response.json()['suggestion']
-                instance.api_id = response.json()['api_id']
+            elif response.json()["action"] == "moderation":
+                instance.suggestion = response.json()["suggestion"]
+                instance.api_id = response.json()["api_id"]
                 instance.save()
                 return True
         except Exception as e:
@@ -71,16 +71,14 @@ def api_process_approved(instance):
 
     api_url, token, headers = get_settings()
 
-    data = {
-        'api_id': instance.api_id
-    }
+    data = {"api_id": instance.api_id}
 
-    url = api_url + reverse('api:process_approved')
+    url = api_url + reverse("api:process_approved")
 
     r = requests.post(url, headers=headers, data=data)
 
     if r.status_code == requests.codes.ok:
-        instance.api_id = r.json()['api_id']
+        instance.api_id = r.json()["api_id"]
         instance.save()
     elif r.status_code != 403:
         instance.delete()
@@ -96,12 +94,12 @@ def api_process_rejected(instance, reason):
     api_url, token, headers = get_settings()
 
     data = {
-        'reason': reason,
-        'api_id': instance.api_id,
-        'suggestion': instance.suggestion
+        "reason": reason,
+        "api_id": instance.api_id,
+        "suggestion": instance.suggestion,
     }
 
-    url = api_url + reverse('api:process_rejected')
+    url = api_url + reverse("api:process_rejected")
 
     r = requests.post(url, headers=headers, data=data)
 
@@ -119,7 +117,7 @@ def api_reject_options():
 
     api_url, token, headers = get_settings()
 
-    url = api_url + reverse('api:reject_options')
+    url = api_url + reverse("api:reject_options")
 
     r = requests.get(url, headers=headers)
 
@@ -133,13 +131,9 @@ def api_process_deleted(instance, reason, by):
 
     api_url, token, headers = get_settings()
 
-    data = {
-        'reason': reason,
-        'by': by,
-        'api_id': instance.api_id
-    }
+    data = {"reason": reason, "by": by, "api_id": instance.api_id}
 
-    url = api_url + reverse('api:process_deleted')
+    url = api_url + reverse("api:process_deleted")
 
     r = requests.post(url, headers=headers, data=data)
 
@@ -154,7 +148,7 @@ def api_my_delete_options():
 
     api_url, token, headers = get_settings()
 
-    url = api_url + reverse('api:my_delete_options')
+    url = api_url + reverse("api:my_delete_options")
 
     r = requests.get(url, headers=headers)
 
@@ -169,7 +163,7 @@ def api_forme_delete_options():
 
     api_url, token, headers = get_settings()
 
-    url = api_url + reverse('api:forme_delete_options')
+    url = api_url + reverse("api:forme_delete_options")
 
     r = requests.get(url, headers=headers)
 
@@ -179,7 +173,7 @@ def api_forme_delete_options():
 def api_get_update_coinhive():
     api_url, token, headers = get_settings()
 
-    url = api_url + reverse('api:coinhivestats')
+    url = api_url + reverse("api:coinhivestats")
 
     r = requests.get(url, headers=headers)
 
@@ -193,13 +187,9 @@ def api_submit_message_log(conversation_id, text, sender):
     """
     api_url, token, headers = get_settings()
 
-    data = {
-        'conversation_id': conversation_id,
-        'text': text,
-        'sender': sender
-    }
+    data = {"conversation_id": conversation_id, "text": text, "sender": sender}
 
-    url = api_url + reverse('api:submit_message_log')
+    url = api_url + reverse("api:submit_message_log")
 
     r = requests.post(url, headers=headers, data=data)
 
@@ -213,11 +203,9 @@ def api_process_raw_bot_message(message):
     """
     api_url, token, headers = get_settings()
 
-    data = {
-        'message': message
-    }
+    data = {"message": message}
 
-    url = api_url + reverse('api:process_raw_bot_message')
+    url = api_url + reverse("api:process_raw_bot_message")
 
     r = requests.post(url, headers=headers, data=data)
 

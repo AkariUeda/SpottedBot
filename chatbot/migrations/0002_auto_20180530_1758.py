@@ -7,28 +7,28 @@ import django.utils.timezone
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('chatbot', '0001_initial'),
+        ("chatbot", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='chat',
-            name='accept_raw_input',
+            model_name="chat",
+            name="accept_raw_input",
             field=models.BooleanField(default=False),
         ),
         migrations.AddField(
-            model_name='chat',
-            name='accept_raw_input_dt',
+            model_name="chat",
+            name="accept_raw_input_dt",
             field=models.DateTimeField(default=django.utils.timezone.now),
         ),
         migrations.AddField(
-            model_name='chat',
-            name='conversation_id',
+            model_name="chat",
+            name="conversation_id",
             field=models.CharField(max_length=32, null=True),
         ),
         migrations.AddField(
-            model_name='chat',
-            name='log_conversation',
+            model_name="chat",
+            name="log_conversation",
             field=models.BooleanField(default=False),
         ),
     ]

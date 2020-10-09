@@ -1,5 +1,3 @@
-
-
 def is_moderator(user):
     # Checks whether the user is a moderator
     try:

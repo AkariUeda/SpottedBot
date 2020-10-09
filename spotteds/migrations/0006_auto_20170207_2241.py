@@ -8,18 +8,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('spotteds', '0005_pendingspotted_suggestion'),
+        ("spotteds", "0005_pendingspotted_suggestion"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='pendingspotted',
-            name='api_id',
+            model_name="pendingspotted",
+            name="api_id",
             field=models.IntegerField(null=True),
         ),
         migrations.AddField(
-            model_name='spotted',
-            name='api_id',
+            model_name="spotted",
+            name="api_id",
             field=models.IntegerField(null=True),
         ),
     ]

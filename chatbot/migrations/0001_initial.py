@@ -8,17 +8,24 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Chat',
+            name="Chat",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('uid', models.CharField(max_length=200, unique=True)),
-                ('standby', models.BooleanField(default=False)),
-                ('standby_dt', models.DateTimeField(default=django.utils.timezone.now)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("uid", models.CharField(max_length=200, unique=True)),
+                ("standby", models.BooleanField(default=False)),
+                ("standby_dt", models.DateTimeField(default=django.utils.timezone.now)),
             ],
         ),
     ]

@@ -29,11 +29,11 @@ class AjaxableResponseMixin:
             return super().form_valid(form)
 
 
-@method_decorator(custom_user_passes_test(is_moderator), name='dispatch')
+@method_decorator(custom_user_passes_test(is_moderator), name="dispatch")
 class ModOnlyMixin(View):
     pass
 
 
-@method_decorator(login_required, name='dispatch')
+@method_decorator(login_required, name="dispatch")
 class LoginRequiredMixin(View):
     pass

@@ -9,34 +9,40 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('moderation', '0001_initial'),
-        ('spotteds', '0001_initial'),
+        ("moderation", "0001_initial"),
+        ("spotteds", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='pendingspotted',
-            name='public',
+            model_name="pendingspotted",
+            name="public",
             field=models.BooleanField(default=False),
         ),
         migrations.AddField(
-            model_name='spotted',
-            name='approver',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='approved_spotteds', to='moderation.Moderator'),
+            model_name="spotted",
+            name="approver",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="approved_spotteds",
+                to="moderation.Moderator",
+            ),
         ),
         migrations.AddField(
-            model_name='spotted',
-            name='created',
+            model_name="spotted",
+            name="created",
             field=models.DateTimeField(auto_now_add=True, null=True),
         ),
         migrations.AddField(
-            model_name='spotted',
-            name='public',
+            model_name="spotted",
+            name="public",
             field=models.BooleanField(default=False),
         ),
         migrations.AddField(
-            model_name='spotted',
-            name='reported',
-            field=models.CharField(default='', max_length=100),
+            model_name="spotted",
+            name="reported",
+            field=models.CharField(default="", max_length=100),
         ),
     ]

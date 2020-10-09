@@ -12,10 +12,7 @@ class NagMessage(models.Model):
     @staticmethod
     def get():
         if NagMessage.objects.count() == 0:
-            nag = NagMessage(
-                nag_id=get_random_string(32),
-                message=''
-            )
+            nag = NagMessage(nag_id=get_random_string(32), message="")
             nag.save()
         else:
             nag = NagMessage.objects.first()

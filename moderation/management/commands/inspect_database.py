@@ -7,7 +7,7 @@ from spotteds.models import Spotted, PendingSpotted
 
 
 class Command(BaseCommand):
-    help = 'Inspect Database'
+    help = "Inspect Database"
 
     def handle(self, *args, **options):
 
@@ -21,7 +21,7 @@ def inspect_executer():
         "Moderator": len(Moderator.objects.all()),
         "WorkHour": len(WorkHour.objects.all()),
         "Spotted": len(Spotted.objects.all()),
-        "PendingSpotted": len(PendingSpotted.objects.all())
+        "PendingSpotted": len(PendingSpotted.objects.all()),
     }
 
     text = ""

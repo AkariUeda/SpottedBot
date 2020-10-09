@@ -8,9 +8,15 @@ from django.db import transaction
 from spotteds.models import PendingSpotted, Spotted
 from .models import Moderator
 
-from api.api_interface import api_process_approved, api_process_rejected, api_reject_options, api_process_deleted
+from api.api_interface import (
+    api_process_approved,
+    api_process_rejected,
+    api_reject_options,
+    api_process_deleted,
+)
 from .forms import WorkHourFormSet
 from main.mixins import ModOnlyMixin
+
 # Create your views here.
 
 
@@ -18,7 +24,7 @@ from main.mixins import ModOnlyMixin
 
 
 class ModView(ModOnlyMixin, ListView):
-    context_object_name = 'spotteds'
+    context_object_name = "spotteds"
 
 
 class PendingSpottedsView(ModView):
@@ -27,7 +33,7 @@ class PendingSpottedsView(ModView):
     render pending spotteds view
     """
 
-    template_name = 'moderation/pending_spotteds.html'
+    template_name = "moderation/pending_spotteds.html"
     model = PendingSpotted
 
     def get_queryset(self, **kwargs):
@@ -40,7 +46,7 @@ class PolemicSpottedsView(ModView):
     render Polemic spotteds view
     """
 
-    template_name = 'moderation/polemic_spotteds.html'
+    template_name = "moderation/polemic_spotteds.html"
     model = PendingSpotted
 
     def get_queryset(self, **kwargs):
@@ -53,11 +59,11 @@ class HistorySpottedsView(ModView):
     render spotted historys view
     """
 
-    template_name = 'moderation/history_spotteds.html'
+    template_name = "moderation/history_spotteds.html"
     model = Spotted
 
     def get_queryset(self, **kwargs):
-        return self.model.objects.filter(reported='')[:500]
+        return self.model.objects.filter(reported="")[:500]
 
 
 class ReportedSpottedsView(ModView):
@@ -66,11 +72,11 @@ class ReportedSpottedsView(ModView):
     render reported spotteds view
     """
 
-    template_name = 'moderation/reported_spotteds.html'
+    template_name = "moderation/reported_spotteds.html"
     model = Spotted
 
     def get_queryset(self, **kwargs):
-        return self.model.objects.exclude(reported='')
+        return self.model.objects.exclude(reported="")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -80,21 +86,21 @@ class ReportedSpottedsView(ModView):
 
 class ChangeShifts(ModOnlyMixin, FormView):
     form_class = WorkHourFormSet
-    template_name = 'moderation/shifts.html'
+    template_name = "moderation/shifts.html"
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs['instance'] = self.request.user.moderator
+        kwargs["instance"] = self.request.user.moderator
         return kwargs
 
     def form_valid(self, form):
         form.save()
-        messages.add_message(self.request, messages.SUCCESS, 'Turnos atualizados!')
+        messages.add_message(self.request, messages.SUCCESS, "Turnos atualizados!")
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['formset'] = context['form']
+        context["formset"] = context["form"]
         return context
 
 
@@ -104,15 +110,16 @@ class ShowShifts(ModOnlyMixin, ListView):
     render show shifts view
     """
 
-    template_name = 'moderation/show_shifts.html'
+    template_name = "moderation/show_shifts.html"
     model = Moderator
-    context_object_name = 'moderators'
+    context_object_name = "moderators"
 
     def get_queryset(self, **kwargs):
         return self.model.objects.all()
 
 
 # Action Views
+
 
 class PolemicSubmit(ModOnlyMixin, View):
     """Polemic Submit.
@@ -121,13 +128,13 @@ class PolemicSubmit(ModOnlyMixin, View):
     """
 
     def post(self, request):
-        instance = get_object_or_404(PendingSpotted, id=request.POST['id'])
+        instance = get_object_or_404(PendingSpotted, id=request.POST["id"])
         instance.polemic = True
         instance.save()
-        return HttpResponse('Success')
+        return HttpResponse("Success")
 
 
-@method_decorator(transaction.atomic, name='dispatch')
+@method_decorator(transaction.atomic, name="dispatch")
 class ApproveSubmit(ModOnlyMixin, View):
     """Approve Submit.
 
@@ -136,14 +143,16 @@ class ApproveSubmit(ModOnlyMixin, View):
 
     def post(self, request):
         try:
-            instance = PendingSpotted.objects.select_for_update().get(id=request.POST['id'])
+            instance = PendingSpotted.objects.select_for_update().get(
+                id=request.POST["id"]
+            )
         except PendingSpotted.DoesNotExist:
-            return HttpResponse('Success')
+            return HttpResponse("Success")
         response = api_process_approved(instance)
         if response:
             instance.post_spotted(request.user.moderator)
 
-        return HttpResponse('Success')
+        return HttpResponse("Success")
 
 
 class RejectOptions(ModOnlyMixin, View):
@@ -157,7 +166,7 @@ class RejectOptions(ModOnlyMixin, View):
         return JsonResponse(data)
 
 
-@method_decorator(transaction.atomic, name='dispatch')
+@method_decorator(transaction.atomic, name="dispatch")
 class RejectSubmit(ModOnlyMixin, View):
     """Reject Submit.
 
@@ -166,11 +175,13 @@ class RejectSubmit(ModOnlyMixin, View):
 
     def post(self, request):
         try:
-            instance = PendingSpotted.objects.select_for_update().get(id=request.POST['id'])
+            instance = PendingSpotted.objects.select_for_update().get(
+                id=request.POST["id"]
+            )
         except PendingSpotted.DoesNotExist:
-            return HttpResponse('Success')
-        api_process_rejected(instance, request.POST['option'])
-        return HttpResponse('Success')
+            return HttpResponse("Success")
+        api_process_rejected(instance, request.POST["option"])
+        return HttpResponse("Success")
 
 
 class UnReportSubmit(ModOnlyMixin, View):
@@ -180,13 +191,13 @@ class UnReportSubmit(ModOnlyMixin, View):
     """
 
     def post(self, request):
-        instance = get_object_or_404(Spotted, id=request.POST['id'])
-        instance.reported = ''
+        instance = get_object_or_404(Spotted, id=request.POST["id"])
+        instance.reported = ""
         instance.save()
-        return HttpResponse('Success')
+        return HttpResponse("Success")
 
 
-@method_decorator(transaction.atomic, name='dispatch')
+@method_decorator(transaction.atomic, name="dispatch")
 class ReportSubmit(ModOnlyMixin, View):
     """Report Submit.
 
@@ -194,9 +205,9 @@ class ReportSubmit(ModOnlyMixin, View):
     """
 
     def post(self, request):
-        instance = get_object_or_404(Spotted, id=request.POST['id'])
-        response = api_process_deleted(instance, request.POST['option'], "reported")
+        instance = get_object_or_404(Spotted, id=request.POST["id"])
+        response = api_process_deleted(instance, request.POST["option"], "reported")
         if not response:
             raise Http404
         instance.remove_spotted(True)
-        return HttpResponse('Success')
+        return HttpResponse("Success")

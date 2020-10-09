@@ -8,23 +8,23 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('spotteds', '0006_auto_20170207_2241'),
+        ("spotteds", "0006_auto_20170207_2241"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='pendingspotted',
-            name='api_id',
+            model_name="pendingspotted",
+            name="api_id",
             field=models.IntegerField(default=0),
         ),
         migrations.AlterField(
-            model_name='spotted',
-            name='api_id',
+            model_name="spotted",
+            name="api_id",
             field=models.IntegerField(default=0),
         ),
         migrations.AlterField(
-            model_name='spotted',
-            name='reported',
-            field=models.CharField(default='', max_length=1000),
+            model_name="spotted",
+            name="reported",
+            field=models.CharField(default="", max_length=1000),
         ),
     ]

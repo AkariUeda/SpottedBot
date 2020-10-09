@@ -3,7 +3,7 @@ import os
 from django.conf import settings
 
 
-LOG_PATH = os.path.dirname(os.path.dirname(__file__)) + '/logs/'
+LOG_PATH = os.path.dirname(os.path.dirname(__file__)) + "/logs/"
 
 
 class LogHandler(object):
@@ -17,18 +17,23 @@ class LogHandler(object):
         level (str): Min log level
     """
 
-    def __init__(self, module, level='DEBUG'):
+    def __init__(self, module, level="DEBUG"):
         # Initialize logger
         self.logger = logging.getLogger(module)
-        self.logger.setLevel(getattr(logging, level, 'DEBUG'))
+        self.logger.setLevel(getattr(logging, level, "DEBUG"))
 
         # Formatter
-        formatter_full = logging.Formatter('%(asctime)-15s %(levelname)-8s %(name)-15s: %(message)s', '%d/%m/%Y %H:%M:%S')
-        formatter = logging.Formatter('%(asctime)-15s %(levelname)-8s: %(message)s', '%d/%m/%Y %H:%M:%S')
+        formatter_full = logging.Formatter(
+            "%(asctime)-15s %(levelname)-8s %(name)-15s: %(message)s",
+            "%d/%m/%Y %H:%M:%S",
+        )
+        formatter = logging.Formatter(
+            "%(asctime)-15s %(levelname)-8s: %(message)s", "%d/%m/%Y %H:%M:%S"
+        )
 
         # Stream Handler
         st = logging.StreamHandler()
-        st.setLevel(getattr(logging, level, 'DEBUG'))
+        st.setLevel(getattr(logging, level, "DEBUG"))
         st.setFormatter(formatter_full)
         self.logger.addHandler(st)
 
@@ -46,13 +51,14 @@ class LogHandler(object):
 
         # SMTP Handler
         sm = logging.handlers.SMTPHandler(
-            mailhost=('smtp.gmail.com', 587),
+            mailhost=("smtp.gmail.com", 587),
             fromaddr=settings.DEFAULT_FROM_EMAIL,
             toaddrs=settings.ADMINS[0][1],
             subject="[Django] Manual Error",
             credentials=(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD),
-            secure=())
-        sm.setLevel(getattr(logging, level, 'DEBUG'))
+            secure=(),
+        )
+        sm.setLevel(getattr(logging, level, "DEBUG"))
         sm.setFormatter(formatter_full)
         self.logger.addHandler(sm)
 

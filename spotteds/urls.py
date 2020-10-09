@@ -15,9 +15,10 @@ Including another URLconf
 """
 from django.urls import path
 from . import views
-app_name = 'spotteds'
+
+app_name = "spotteds"
 
 urlpatterns = [
-    path('view_spotted/<int:pk>/', views.ViewSpotted.as_view(), name='view_spotted'),
-    path('list_spotteds/', views.ListSpotteds.as_view(), name='list_spotteds'),
+    path("view_spotted/<int:pk>/", views.ViewSpotted.as_view(), name="view_spotted"),
+    path("list_spotteds/", views.ListSpotteds.as_view(), name="list_spotteds"),
 ]

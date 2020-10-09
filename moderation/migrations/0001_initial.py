@@ -10,25 +10,120 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Moderator',
+            name="Moderator",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='WorkHour',
+            name="WorkHour",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('day', models.IntegerField(choices=[(0, 'Segunda'), (1, 'Terça'), (2, 'Quarta'), (3, 'Quinta'), (4, 'Sexta'), (5, 'Sábado'), (6, 'Domingo')])),
-                ('hour', models.IntegerField(choices=[(0, '0:00'), (1, '1:00'), (2, '2:00'), (3, '3:00'), (4, '4:00'), (5, '5:00'), (6, '6:00'), (7, '7:00'), (8, '8:00'), (9, '9:00'), (10, '10:00'), (11, '11:00'), (12, '12:00'), (13, '13:00'), (14, '14:00'), (15, '15:00'), (16, '16:00'), (17, '17:00'), (18, '18:00'), (19, '19:00'), (20, '20:00'), (21, '21:00'), (22, '22:00'), (23, '23:00')])),
-                ('duration', models.IntegerField(choices=[(1, '1:00'), (2, '2:00'), (3, '3:00'), (4, '4:00'), (5, '5:00'), (6, '6:00'), (7, '7:00'), (8, '8:00'), (9, '9:00'), (10, '10:00'), (11, '11:00'), (12, '12:00'), (13, '13:00'), (14, '14:00'), (15, '15:00'), (16, '16:00'), (17, '17:00'), (18, '18:00'), (19, '19:00'), (20, '20:00'), (21, '21:00'), (22, '22:00'), (23, '23:00'), (24, '24:00')])),
-                ('last_worked', models.DateTimeField(null=True)),
-                ('moderator', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='workhours', to='moderation.Moderator')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "day",
+                    models.IntegerField(
+                        choices=[
+                            (0, "Segunda"),
+                            (1, "Terça"),
+                            (2, "Quarta"),
+                            (3, "Quinta"),
+                            (4, "Sexta"),
+                            (5, "Sábado"),
+                            (6, "Domingo"),
+                        ]
+                    ),
+                ),
+                (
+                    "hour",
+                    models.IntegerField(
+                        choices=[
+                            (0, "0:00"),
+                            (1, "1:00"),
+                            (2, "2:00"),
+                            (3, "3:00"),
+                            (4, "4:00"),
+                            (5, "5:00"),
+                            (6, "6:00"),
+                            (7, "7:00"),
+                            (8, "8:00"),
+                            (9, "9:00"),
+                            (10, "10:00"),
+                            (11, "11:00"),
+                            (12, "12:00"),
+                            (13, "13:00"),
+                            (14, "14:00"),
+                            (15, "15:00"),
+                            (16, "16:00"),
+                            (17, "17:00"),
+                            (18, "18:00"),
+                            (19, "19:00"),
+                            (20, "20:00"),
+                            (21, "21:00"),
+                            (22, "22:00"),
+                            (23, "23:00"),
+                        ]
+                    ),
+                ),
+                (
+                    "duration",
+                    models.IntegerField(
+                        choices=[
+                            (1, "1:00"),
+                            (2, "2:00"),
+                            (3, "3:00"),
+                            (4, "4:00"),
+                            (5, "5:00"),
+                            (6, "6:00"),
+                            (7, "7:00"),
+                            (8, "8:00"),
+                            (9, "9:00"),
+                            (10, "10:00"),
+                            (11, "11:00"),
+                            (12, "12:00"),
+                            (13, "13:00"),
+                            (14, "14:00"),
+                            (15, "15:00"),
+                            (16, "16:00"),
+                            (17, "17:00"),
+                            (18, "18:00"),
+                            (19, "19:00"),
+                            (20, "20:00"),
+                            (21, "21:00"),
+                            (22, "22:00"),
+                            (23, "23:00"),
+                            (24, "24:00"),
+                        ]
+                    ),
+                ),
+                ("last_worked", models.DateTimeField(null=True)),
+                (
+                    "moderator",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="workhours",
+                        to="moderation.Moderator",
+                    ),
+                ),
             ],
         ),
     ]

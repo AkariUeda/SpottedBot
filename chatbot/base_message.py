@@ -13,7 +13,11 @@ class BaseMessage:
         for key, value in kwargs.items():
             payload[key] = json.dumps(value)
         for key in self.data:
-            payload[key] = json.dumps(getattr(self, key)) if not isinstance(getattr(self, key), str) else getattr(self, key)
+            payload[key] = (
+                json.dumps(getattr(self, key))
+                if not isinstance(getattr(self, key), str)
+                else getattr(self, key)
+            )
         return payload
 
     def send(self, endpoint, connection, **kwargs):

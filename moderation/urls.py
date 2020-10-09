@@ -15,21 +15,21 @@ Including another URLconf
 """
 from django.urls import path
 from . import views
-app_name = 'moderation'
+
+app_name = "moderation"
 
 urlpatterns = [
     # /mod/+
-
-    path('pending/', views.PendingSpottedsView.as_view(), name='pending'),
-    path('polemic/', views.PolemicSpottedsView.as_view(), name='polemic'),
-    path('history/', views.HistorySpottedsView.as_view(), name='history'),
-    path('reported/', views.ReportedSpottedsView.as_view(), name='reported'),
-    path('change_shifts/', views.ChangeShifts.as_view(), name='shifts'),
-    path('show_shifts/', views.ShowShifts.as_view(), name='show_shifts'),
-    path('polemic_submit/', views.PolemicSubmit.as_view(), name='polemic_submit'),
-    path('approve_submit/', views.ApproveSubmit.as_view(), name='approve_submit'),
-    path('reject_options/', views.RejectOptions.as_view(), name='reject_options'),
-    path('reject_submit/', views.RejectSubmit.as_view(), name='reject_submit'),
-    path('un_report_submit/', views.UnReportSubmit.as_view(), name='un_report_submit'),
-    path('report_submit/', views.ReportSubmit.as_view(), name='report_submit'),
+    path("pending/", views.PendingSpottedsView.as_view(), name="pending"),
+    path("polemic/", views.PolemicSpottedsView.as_view(), name="polemic"),
+    path("history/", views.HistorySpottedsView.as_view(), name="history"),
+    path("reported/", views.ReportedSpottedsView.as_view(), name="reported"),
+    path("change_shifts/", views.ChangeShifts.as_view(), name="shifts"),
+    path("show_shifts/", views.ShowShifts.as_view(), name="show_shifts"),
+    path("polemic_submit/", views.PolemicSubmit.as_view(), name="polemic_submit"),
+    path("approve_submit/", views.ApproveSubmit.as_view(), name="approve_submit"),
+    path("reject_options/", views.RejectOptions.as_view(), name="reject_options"),
+    path("reject_submit/", views.RejectSubmit.as_view(), name="reject_submit"),
+    path("un_report_submit/", views.UnReportSubmit.as_view(), name="un_report_submit"),
+    path("report_submit/", views.ReportSubmit.as_view(), name="report_submit"),
 ]

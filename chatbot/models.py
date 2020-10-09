@@ -52,6 +52,7 @@ class Chat(models.Model):
         if exp:
             # If it has, take thread control from page
             from .handlers.handover import take_thread_control
+
             take_thread_control(self.uid)
         return exp
 
@@ -90,7 +91,7 @@ class Chat(models.Model):
         chat.save()
         # Send the last message sent by the user,
         # so that the context is maintained
-        last_message = chat.last_raw_message or '500 Mensagem Vazia'
+        last_message = chat.last_raw_message or "500 Mensagem Vazia"
         Chat.append_log(uid, last_message, False)
 
     @staticmethod
@@ -98,7 +99,7 @@ class Chat(models.Model):
         # Append message to the API log
         chat = Chat.set_get_or_create(uid=uid)
         if chat.log_conversation:
-            sender = 'page' if from_page else 'user'
+            sender = "page" if from_page else "user"
             conversation_id = chat.conversation_id
             api_submit_message_log(conversation_id, message, sender)
 

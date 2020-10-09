@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('custom_auth', '0001_initial'),
+        ("custom_auth", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='facebookuser',
-            name='scopes',
-            field=models.CharField(default='[]', max_length=2000),
+            model_name="facebookuser",
+            name="scopes",
+            field=models.CharField(default="[]", max_length=2000),
         )
     ]

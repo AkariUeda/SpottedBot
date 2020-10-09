@@ -15,17 +15,31 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='FacebookUser',
+            name="FacebookUser",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('access_token', models.TextField()),
-                ('social_id', models.TextField(unique=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('expires', models.IntegerField()),
-                ('first_name', models.CharField(max_length=50)),
-                ('name', models.CharField(max_length=150)),
-                ('link', models.URLField(max_length=2000)),
-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("access_token", models.TextField()),
+                ("social_id", models.TextField(unique=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                ("expires", models.IntegerField()),
+                ("first_name", models.CharField(max_length=50)),
+                ("name", models.CharField(max_length=150)),
+                ("link", models.URLField(max_length=2000)),
+                (
+                    "user",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
     ]

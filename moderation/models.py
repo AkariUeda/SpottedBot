@@ -2,6 +2,7 @@ from django.db import models
 import datetime
 from django.utils import timezone
 from django.contrib.auth.models import User
+
 # Create your models here.
 now = timezone.localtime(timezone.now())
 
@@ -20,7 +21,7 @@ def is_moderator(self):
 
 
 # Monkeypatch the property to user
-User.add_to_class('is_moderator', is_moderator)
+User.add_to_class("is_moderator", is_moderator)
 
 
 class Moderator(models.Model):
@@ -29,11 +30,7 @@ class Moderator(models.Model):
     Fields and methods
     """
 
-    user = models.OneToOneField(
-        User,
-        on_delete=models.CASCADE,
-        null=True
-    )
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
 
     def log_action(self):
         for work in self.workhours.all():
@@ -45,22 +42,22 @@ class Moderator(models.Model):
 
 
 WEEK_DAYS = (
-    (0, 'Segunda'),
-    (1, 'Terça'),
-    (2, 'Quarta'),
-    (3, 'Quinta'),
-    (4, 'Sexta'),
-    (5, 'Sábado'),
-    (6, 'Domingo')
+    (0, "Segunda"),
+    (1, "Terça"),
+    (2, "Quarta"),
+    (3, "Quinta"),
+    (4, "Sexta"),
+    (5, "Sábado"),
+    (6, "Domingo"),
 )
 WEEK_DAY_NAMES = {
-    '0': 'Segunda',
-    '1': 'Terça',
-    '2': 'Quarta',
-    '3': 'Quinta',
-    '4': 'Sexta',
-    '5': 'Sábado',
-    '6': 'Domingo'
+    "0": "Segunda",
+    "1": "Terça",
+    "2": "Quarta",
+    "3": "Quinta",
+    "4": "Sexta",
+    "5": "Sábado",
+    "6": "Domingo",
 }
 HOURS = [(i, str(i) + ":00") for i in range(24)]
 DURATION = [(i, str(i) + ":00") for i in range(1, 25)]
@@ -76,7 +73,7 @@ class WorkHour(models.Model):
     moderator = models.ForeignKey(
         Moderator,
         on_delete=models.CASCADE,
-        related_name='workhours',
+        related_name="workhours",
     )
 
     # Work's day(of the week) hour and duration
@@ -100,11 +97,19 @@ class WorkHour(models.Model):
     # True if worked this week. False otherwise
     @property
     def has_worked(self):
-        return self.last_work <= self.last_worked <= self.last_work + datetime.timedelta(hours=self.duration)
+        return (
+            self.last_work
+            <= self.last_worked
+            <= self.last_work + datetime.timedelta(hours=self.duration)
+        )
 
     # Simply call this whenever a moderator makes a change(or login, dunno)
     def action_took(self):
 
-        if self.last_work <= now <= self.last_work + datetime.timedelta(hours=self.duration):
+        if (
+            self.last_work
+            <= now
+            <= self.last_work + datetime.timedelta(hours=self.duration)
+        ):
             self.last_worked = now
             self.save()

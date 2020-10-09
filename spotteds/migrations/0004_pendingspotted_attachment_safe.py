@@ -8,13 +8,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('spotteds', '0003_pendingspotted_polemic'),
+        ("spotteds", "0003_pendingspotted_polemic"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='pendingspotted',
-            name='attachment_safe',
+            model_name="pendingspotted",
+            name="attachment_safe",
             field=models.BooleanField(default=False),
         ),
     ]
