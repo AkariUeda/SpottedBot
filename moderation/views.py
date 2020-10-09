@@ -80,7 +80,6 @@ class ReportedSpottedsView(ModView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        print(context)
         return context
 
 
@@ -151,6 +150,8 @@ class ApproveSubmit(ModOnlyMixin, View):
         response = api_process_approved(instance)
         if response:
             instance.post_spotted(request.user.moderator)
+        else:
+            raise Http404
 
         return HttpResponse("Success")
 

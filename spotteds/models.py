@@ -214,11 +214,6 @@ class PendingSpotted(models.Model):
         s.save()
         self.delete()
 
-        # send notifications
-        if s.author and not settings.TEST_MODE:
-            author_notification.delay(s.id)
-        if s.target and not settings.TEST_MODE:
-            target_notification.delay(s.id)
         return s
 
     def __str__(self):
