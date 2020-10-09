@@ -6,6 +6,8 @@ RUN mkdir /app
 
 WORKDIR /app
 
+RUN apt update && apt-get install git -y
+
 COPY requirements.txt /app/
 
 RUN pip install -r requirements.txt
