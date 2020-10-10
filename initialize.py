@@ -187,7 +187,7 @@ env = [
         "name": "SPOTTED_API_URL",
         "title": "URL do SpottedAPI",
         "ask": False,
-        "default": "http://spottedapi.herokuapp.com",
+        "default": "https://spottedapi.maronato.dev",
     },
     {
         "name": "SPOTTED_API_SECRET",

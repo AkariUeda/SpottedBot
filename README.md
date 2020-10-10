@@ -8,7 +8,7 @@ A platform for university students to send "spotteds", that aims to be completel
 
 It's being used by many universities in Brazil as a state-of-the-art spotted automation system.
 
-It's stable and [live](https://spottedsunicamp.herokuapp.com/) with more than five thousand users and about three hundred daily spotted submissions.
+It's stable and [live](https://spotted.maronato.dev/) with more than five thousand users and about three hundred daily spotted submissions.
 
 ## Features
 
