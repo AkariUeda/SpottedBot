@@ -23,7 +23,7 @@
         <div class="ui grid stackable">
             <div class="row centered">
                 <div class="six wide column">
-                    <form id="spotted_form" method="post" class="ui form">
+                    <form id="spotted_form" method="post" class="ui form" onsubmit="plausible('Spotted Sent')">
                         {% csrf_token %}
                         <input name="action" type="hidden" value="spottedform">
                         <div style="display: none" class="ui top attached tabular menu">
